@@ -14,12 +14,18 @@ const signUpBody = zod.object({
     password : zod.string().min(6),
 })
 
-userRoutes.post("/signup", (c) => {
+userRoutes.post("/signup", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
-
+  await prisma.user.create({
+    data: {
+        name : "Pritam",
+        email : "pritam123@gmail.com",
+        password : "pritam@123"
+    }
+  })
 
   return c.text("Hello World");
 });
