@@ -175,6 +175,7 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/node,macos
 
+wrangler.json
 wrangler-dist/
 miniflare-dist
 packages/wrangler/wrangler.toml
