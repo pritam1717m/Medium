@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import zod from "zod";
+import {signUpBody, signInBody} from '@rafael1717/common'
 import { sign } from "hono/jwt";
 import bcrypt from "bcryptjs";
 
@@ -11,12 +11,6 @@ const userRoutes = new Hono<{
     JWT_SECRET: string;
   };
 }>();
-
-const signUpBody = zod.object({
-  name: zod.string().min(1),
-  email: zod.string().email(),
-  password: zod.string().min(6),
-});
 
 userRoutes.post("/signup", async (c) => {
   const prisma = new PrismaClient({
@@ -63,11 +57,6 @@ userRoutes.post("/signup", async (c) => {
   } catch (err) {
     return c.json({ error: "Somthing went wrong" });
   }
-});
-
-const signInBody = zod.object({
-  email: zod.string().email(),
-  password: zod.string().min(6),
 });
 
 userRoutes.post("/signin", async (c) => {
