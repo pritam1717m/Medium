@@ -8,13 +8,13 @@
   "dependencies": {
     "@prisma/client": "^6.3.0",
     "@prisma/extension-accelerate": "^1.2.1",
+    "@rafael1717/common": "^1.1.0",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
     "hono": "^4.6.20",
-    "prisma": "^6.3.0",
-    "zod": "^3.24.1"
+    "prisma": "^6.3.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250109.0",
