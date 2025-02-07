@@ -24,26 +24,26 @@ export declare const signInBody: zod.ZodObject<{
 }>;
 export declare const createBlogInput: zod.ZodObject<{
     title: zod.ZodString;
-    content: zod.ZodString;
+    content: zod.ZodAny;
 }, "strip", zod.ZodTypeAny, {
     title: string;
-    content: string;
+    content?: any;
 }, {
     title: string;
-    content: string;
+    content?: any;
 }>;
 export declare const updateBlogInput: zod.ZodObject<{
     title: zod.ZodString;
-    content: zod.ZodString;
+    content: zod.ZodAny;
     id: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
     title: string;
-    content: string;
     id: string;
+    content?: any;
 }, {
     title: string;
-    content: string;
     id: string;
+    content?: any;
 }>;
 export type SignUpInput = zod.infer<typeof signUpBody>;
 export type SignInInput = zod.infer<typeof signInBody>;

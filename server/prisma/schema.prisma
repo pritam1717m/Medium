@@ -18,14 +18,36 @@ model User {
   email    String    @unique
   name     String?
   password String
+  about    String?
+  image    String?
+  links    Json?
   posts    Post[]
+  followers  Follower[] @relation("UserFollowers")
+  following  Follower[] @relation("UserFollowing")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Post {
   id       String    @id @default(uuid())
   title    String
-  content  String
+  content  Json
   published Boolean  @default(false)
+  publishedAt DateTime  @default(now())
   author   User      @relation(fields: [authorId], references: [id])
   authorId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Follower {
+  id          String  @id @default(uuid())
+  followerId  String
+  followingId String
+  follower   User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following  User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([followerId, followingId])
 }

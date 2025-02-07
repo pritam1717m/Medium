@@ -16,10 +16,10 @@ exports.signInBody = zod_1.default.object({
 });
 exports.createBlogInput = zod_1.default.object({
     title: zod_1.default.string(),
-    content: zod_1.default.string()
+    content: zod_1.default.any()
 });
 exports.updateBlogInput = zod_1.default.object({
     title: zod_1.default.string(),
-    content: zod_1.default.string(),
+    content: zod_1.default.any(),
     id: zod_1.default.string()
 });

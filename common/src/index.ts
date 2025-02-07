@@ -1,4 +1,4 @@
-import zod from "zod";
+import zod, { any } from "zod";
 
 export const signUpBody = zod.object({
   name: zod.string().min(1),
@@ -13,12 +13,12 @@ export const signInBody = zod.object({
 
 export const createBlogInput = zod.object({
     title : zod.string(),
-    content : zod.string()
+    content : zod.any()
 })
 
 export const updateBlogInput = zod.object({
     title : zod.string(),
-    content : zod.string(),
+    content : zod.any(),
     id: zod.string()
 })
 
