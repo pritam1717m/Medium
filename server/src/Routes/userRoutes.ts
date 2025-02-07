@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import {signUpBody, signInBody} from '@rafael1717/common'
+import { signUpBody, signInBody } from "@rafael1717/common";
 import { sign } from "hono/jwt";
 import bcrypt from "bcryptjs";
 
@@ -9,6 +9,9 @@ const userRoutes = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
+    CLOUDINARY_ClOUD_NAME: string;
+    CLOUDINARY_API_KEY: string;
+    CLOUDINARY_SECRET: string;
   };
 }>();
 
@@ -86,23 +89,20 @@ userRoutes.post("/signin", async (c) => {
 
     try {
       const isMatched = await bcrypt.compare(body.password, user.password);
-      if(!isMatched) {
-        c.status(401)
-        return c.json({error : "Please enter correct password"})
+      if (!isMatched) {
+        c.status(401);
+        return c.json({ error: "Please enter correct password" });
       }
 
-      const token = await sign({id : user.id}, c.env.JWT_SECRET);
-      return c.json({token})
-
+      const token = await sign({ id: user.id }, c.env.JWT_SECRET);
+      return c.json({ token });
     } catch (err) {
-      c.status(403)
-      return c.json({error : "Something went wrong", err})
+      c.status(403);
+      return c.json({ error: "Something went wrong", err });
     }
-
   } catch (err) {
     return c.json({ error: "Somthing went wrong" });
   }
-
 });
 
 export default userRoutes;
