@@ -50,7 +50,7 @@ const blogs = [
   
 function BlogsLeft() {
   return (
-    <div className="px-10 pt-10 flex flex-col">
+    <div className="px-5 sm:px-10 pt-10 flex flex-col">
         <p>Navigation</p>
         <div className="mt-5">
             {blogs.map((blog) => {

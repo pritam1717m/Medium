@@ -103,3 +103,57 @@
   @apply block;
 }
 
+.dark .ce-toolbar__plus,
+.dark .ce-toolbar__settings-btn {
+  background-color: #1e293b !important; /* Dark gray */
+  color: #f8fafc !important; /* Light text */
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.dark .ce-toolbar__plus:hover,
+.dark .ce-toolbar__settings-btn:hover {
+  background-color: #334155 !important; /* Slightly lighter gray */
+}
+
+/* ✨ Custom Scrollbar */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thumb-gray-400::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-thumb-gray-400::-webkit-scrollbar-thumb {
+  background-color: #9ca3af; /* Light Gray */
+  border-radius: 6px;
+}
+
+.dark .scrollbar-thumb-gray-600::-webkit-scrollbar-thumb {
+  background-color: #4b5563; /* Darker Gray */
+}
+
+::selection {
+  background-color: #3b82f6; /* Tailwind's blue-500 */
+  color: white;
+}
+
+.dark ::selection {
+  background-color: #1e40af; /* Tailwind's blue-800 */
+  color: #f1f5f9; /* Tailwind's slate-100 */
+}
+
+/* 🌙 Improve Editor.js Text Selection */
+.ce-block__content ::selection,
+.ce-toolbar ::selection {
+  background-color: #3b82f6 !important; /* Light blue */
+  color: white !important;
+}
+
+.dark .ce-block__content ::selection,
+.dark .ce-toolbar ::selection {
+  background-color: #1e40af !important; /* Darker blue */
+  color: #f1f5f9 !important; /* Light gray text */
+}
+

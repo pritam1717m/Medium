@@ -14,7 +14,7 @@ const links = [
   
 function Footer() {
   return (
-    <div className="w-full h-20 border-t list-none flex flex-row flex-wrap items-center justify-center space-x-3 font-[HostGrotesk] text-sm text-gray-600 bg-orange-50">
+    <div className="w-full h-20 px-5 border-t list-none flex flex-row flex-wrap items-center justify-center space-x-3 font-[HostGrotesk] text-sm text-gray-600 bg-orange-50">
         {links.map(link => <li key={link.id}>
             {link.name}
         </li>) }

@@ -47,14 +47,14 @@ export function Auth({
           {label}
         </a>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] flex flex-col items-center justify-center font-[HostGrotesk] bg-transparent backdrop-blur-3xl border-slate-300 shadow-2xl">
+      <DialogContent className="px-10 md:max-w-[425px] flex flex-col items-center justify-center font-[HostGrotesk] bg-transparent backdrop-blur-3xl border-slate-300 shadow-4xl">
         <DialogTitle></DialogTitle>
         <Tabs defaultValue="signin" className="w-[400px]">
           <TabsList className="grid w-full grid-cols-2 bg-transparent space-x-1">
-            <TabsTrigger value="signin" className="border text-black">
+            <TabsTrigger value="signin" className="border border-black data-[state=active]:bg-black data-[state=active]:text-white text-black ">
               SignIn
             </TabsTrigger>
-            <TabsTrigger value="signup" className="border text-black">
+            <TabsTrigger value="signup" className="border border-black data-[state=active]:bg-black data-[state=active]:text-white text-black">
               SignUp
             </TabsTrigger>
           </TabsList>
@@ -64,6 +64,7 @@ export function Auth({
                 <div className="space-y-1">
                   <Label htmlFor="username">Username/Email</Label>
                   <Input
+                    className="border-black"
                     id="username"
                     placeholder="john123@xyz.com"
                     onInput={(e) => {
@@ -76,6 +77,7 @@ export function Auth({
                   <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
+                    className="border-black"
                     type="password"
                     onInput={(e) => {
                       setSignin({ ...signin, password: e.currentTarget.value });
@@ -122,6 +124,7 @@ export function Auth({
                   <Label htmlFor="name">Name</Label>
                   <Input
                     id="name"
+                    className="border-black"
                     placeholder="John Doe"
                     onInput={(e) => {
                       setSignup({ ...signup, name: e.currentTarget.value });
@@ -133,6 +136,7 @@ export function Auth({
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
+                    className="border-black"
                     type="email"
                     placeholder="john123@xyz.com"
                     onInput={(e) => {
@@ -145,6 +149,7 @@ export function Auth({
                   <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
+                    className="border-black"
                     type="password"
                     onInput={(e) => {
                       setSignup({ ...signup, password: e.currentTarget.value });

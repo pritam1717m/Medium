@@ -23,7 +23,7 @@ function Blogs() {
   }, []);
   return (
     <div
-      className="h-screen w-screen flex flex-col overflow-y-scroll [&::-webkit-scrollbar]:w-2
+      className="h-screen w-screen flex flex-col sm:overflow-y-scroll [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:bg-gray-100
   [&::-webkit-scrollbar-thumb]:bg-gray-300
   dark:[&::-webkit-scrollbar-track]:bg-neutral-700
@@ -35,25 +35,25 @@ function Blogs() {
           {isLoading ? (
             Array.from({ length: 4 }).map(() => {
               return (
-                <div className="py-8 border-b border-slate-200 font-[HostGrotesk]">
+                <div className="py-8 px-5 md:px-5">
                   <div className="flex flex-row space-x-2 items-center">
-                    <Skeleton className="w-7 h-7 rounded-full" />
-                    <Skeleton className="w-60 h-5" />
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <Skeleton className="h-6 w-24" />
                   </div>
-                  <div className="w-full flex flex-row space-x-20">
-                    <div className="mt-2 flex flex-col space-y-3">
-                      <Skeleton className="w-96 h-8" />
-                      <Skeleton className="w-80 h-4" />
+                  <div className="w-full flex flex-row space-x-0 md:space-x-5 mt-4">
+                    <div className="flex flex-col space-y-2 w-full">
+                      <Skeleton className="h-8 w-1/3" />
+                      <Skeleton className="h-6 w-2/3 md:w-5/6" />
+                      <Skeleton className="h-6 w-2/3" />
                     </div>
-                    <div className="md:min-w-36 max-w-36">
-                      <Skeleton className="w-44 h-28" />
-                    </div>
+                    <Skeleton className="h-24 w-36 md:min-w-36 max-w-36" />
                   </div>
-                  <div className="mt-2 flex flex-row space-x-2 text-center text-slate-500 font-medium">
-                    <Skeleton className="w-20 h-5" />
-                    <Skeleton className="w-20 h-5" />
-                    <Skeleton className="w-20 h-5" />
+                  <div className="mt-4 flex flex-row space-x-4 text-center">
+                    <Skeleton className="h-5 w-12" />
+                    <Skeleton className="h-5 w-12" />
+                    <Skeleton className="h-5 w-12" />
                   </div>
+                  <hr className="mt-5"/>
                 </div>
               );
             })
@@ -61,7 +61,7 @@ function Blogs() {
             <BlogsLeft />
           )}
         </div>
-        <div className="max-w-0 md: w-1/3 lg:min-w-96 lg:max-w-52 bg-orange-50 invisible md:visible">
+        <div className="max-w-0 md: w-1/3 lg:min-w-96 lg:max-w-52 bg-orange-50 hidden md:block">
           <BlogsRight />
         </div>
       </div>
