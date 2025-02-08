@@ -22,8 +22,8 @@ function BlogCard({ blog }: { blog: Blog }) {
           <p className="text-2xl font-extrabold text-wrap">{blog.title}</p>
           <p className="text-slate-500 font-medium">{blog.description}</p>
         </div>
-        <div className="md:min-w-36 max-w-36">
-            image
+        <div className="w-0 md:min-w-36 max-w-26">
+            
         </div>
       </div>
       <div className="mt-2 flex flex-row space-x-2 text-center text-slate-500 font-medium">
