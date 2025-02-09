@@ -4,9 +4,12 @@ import Button from "./button";
 import { Input } from "./ui/input";
 import { ModeToggle } from "./mode-toggle";
 import { ProfileDropdown } from "./profile-dropdown";
-import { useRecoilValue } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { userAtom } from "@/store/atom/user";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import axios from "axios";
+import { writeAtom } from "@/store/atom/write";
 
 const appbarLinks = [
   {
@@ -29,6 +32,7 @@ const appbarLinks = [
 function AppBar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const writeId = useSetRecoilState(writeAtom);
 
   let user = true;
   if (!localStorage.getItem("token")) {
@@ -98,6 +102,26 @@ function AppBar() {
             <button
               className="flex space-x-2"
               onClick={() => {
+                  toast.promise(
+                    axios.post(
+                      `${import.meta.env.VITE_domain_uri}/blog`,
+                      { title : 'Untitled', content: {} },
+                      {
+                        headers: {
+                          "Content-Type": "application/json;charset=UTF-8",
+                          Authorization: "Bearer " + localStorage.getItem("token"),
+                        },
+                      }
+                    ),
+                    {
+                      loading: "Creating...",
+                      success:(res) => {
+                        writeId(() =>res.data)
+                        return "Created successfully!"
+                        } ,
+                      error: "Failed to create!",
+                    }
+                  );
                 navigate("/write");
               }}
             >

@@ -4,10 +4,14 @@ import { toast } from "sonner";
 import axios from "axios";
 import Button from "./button";
 import { Input } from "./ui/input";
+import { useRecoilValue } from "recoil";
+import { writeAtom } from "@/store/atom/write";
 
 function Editor() {
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("Untitled");
   const [isMounted, setIsMounted] = useState(false);
+  const writeId = useRecoilValue(writeAtom);
+  console.log(title)
   const ref = useRef<EditorJS | null>(null);
 
   useEffect(() => {
@@ -79,12 +83,22 @@ function Editor() {
 
   const save = useCallback(() => {
     if (!ref.current) return;
+    console.log(title)
+    
     ref.current.save().then((outputData) => {
-      console.log(title)
+      if (!title.trim()) {
+        toast.error("Title cannot be empty!");
+        return;
+      }
+      
+      if (!writeId?.id) {
+        toast.info("Please go thourgh Draft");
+        return;
+      }
       toast.promise(
-        axios.post(
+        axios.put(
           `${import.meta.env.VITE_domain_uri}/blog`,
-          { title, content: outputData },
+          { title, content: outputData, id: writeId.id },
           {
             headers: {
               "Content-Type": "application/json;charset=UTF-8",
@@ -100,7 +114,33 @@ function Editor() {
       );
       console.log("Article data:", outputData);
     });
-  }, []);
+  }, [title, writeId.id]);
+
+  const publish = useCallback(() => {
+    if(!ref.current) return
+    if (!writeId?.id) {
+      toast.info("Please go thourgh Draft");
+      return;
+    }
+    toast.promise(
+      axios.put(
+        `${import.meta.env.VITE_domain_uri}/blog/publish`,
+        {id: writeId.id },
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      ),
+      {
+        loading: "Publishing...",
+        success: "Published successfully!",
+        error: "Failed to publish!",
+      }
+    );
+
+  },[writeId.id])
 
   return (
     <div className="flex flex-col px-5 md:flex-row  items-start justify-evenly dark:bg-gray-950 transition-colors duration-300">
@@ -113,7 +153,7 @@ function Editor() {
               defaultValue="Untitled"
               className="text-lg font-semibold border-none ring-0 shadow-none focus-visible:ring-0 outline-none bg-transparent w-full px-2 transition-all duration-200"
               style={{ fontSize: "1.875rem", lineHeight: "2.25rem" }}
-              onChange={(e) => {setTitle(e.target.value)}}
+              onChange={(e) => {setTitle(() => e.target.value)}}
             />
             <hr className="w-full max-w-6xl mb-2"/>
           </div>
@@ -129,7 +169,7 @@ function Editor() {
       </div>
       <div className="w-full md:w-32 md:ml-5 flex flex-row
       space-x-10 md:flex-col md:space-x-0 justify-center">
-        <Button onClick={save} classname="w-full mt-5 dark:bg-green-500">
+        <Button onClick={publish} classname="w-full mt-5 dark:bg-green-500">
           Publish
         </Button>
         <Button onClick={save} classname="w-full mt-5 dark:bg-orange-700">
