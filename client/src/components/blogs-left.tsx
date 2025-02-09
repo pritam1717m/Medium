@@ -1,64 +1,83 @@
-import BlogCard from "./blog-card"
+import { useRecoilState } from "recoil";
+import BlogCard from "./blog-card";
+import { blogAtom } from "@/store/atom/blogs";
+import { useEffect, useState } from "react";
+import { Skeleton } from "./ui/skeleton";
+import axios from "axios";
 
-const blogs = [
-    {
-      "author": "Mate Marschalko",
-      "title": "18 Advanced React Techniques Every Senior Dev Needs to Know",
-      "description": "As React applications grow more complex, the patterns that were 'just fine' when you were starting out might start to feel limiting...",
-      "date": "Jan 6",
-      "views": 482,
-      "comments": 13,
-      "image": "beach-developer.jpg"
-    },
-    {
-      "author": "Let's Code Future",
-      "title": "7 React Custom Hooks I Can’t Live Without in My Projects 🚀",
-      "description": "React’s functional programming paradigm has revolutionized front-end development, making it easier to create reusable and...",
-      "date": "Dec 27, 2024",
-      "views": 640,
-      "comments": 13,
-      "image": "developer-car.jpg"
-    },
-    {
-      "author": "Tech Enthusiast",
-      "title": "Mastering State Management in React with Redux & Context API",
-      "description": "State management is crucial for scaling React applications. This guide explores when to use Redux vs Context API...",
-      "date": "Feb 2, 2025",
-      "views": 520,
-      "comments": 8,
-      "image": "state-management.jpg"
-    },
-    {
-      "author": "Frontend Guru",
-      "title": "Building a Scalable Component Library in React",
-      "description": "Learn how to create a scalable, reusable component library in React to boost development efficiency and maintainability...",
-      "date": "Jan 15, 2025",
-      "views": 710,
-      "comments": 21,
-      "image": "component-library.jpg"
-    },
-    {
-      "author": "Dev Insights",
-      "title": "Optimizing Performance in React Apps: Tips & Tricks",
-      "description": "Slow React apps? Learn optimization techniques like memoization, lazy loading, and reducing re-renders...",
-      "date": "Feb 5, 2025",
-      "views": 835,
-      "comments": 17,
-      "image": "performance-tips.jpg"
-    }
-  ]
-  
 function BlogsLeft() {
+  const [blogs, setBlogs] = useRecoilState(blogAtom);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    (async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_domain_uri}/blog/all`,
+          {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+
+        if (Array.isArray(res.data.post)) {
+          const formattedBlogs = res.data.post.map((item: any) => ({
+            id: item.id, 
+            title: item.title, 
+            content: item.content, 
+            time: item.updatedAt, 
+            author: item.author.name, 
+          }));
+          
+          setBlogs(formattedBlogs); 
+          setIsLoading(false)
+        } else {
+          console.error("Unexpected response format:");
+        }
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    })();
+  }, []);
+
   return (
     <div className="px-5 sm:px-10 pt-10 flex flex-col">
-        <p>Navigation</p>
-        <div className="mt-5">
-            {blogs.map((blog) => {
-                return <BlogCard blog={blog}/>
+      <p>Navigation</p>
+      <div className="mt-5">
+        {isLoading
+          ? Array.from({ length: 4 }).map((_,index) => {
+              return (
+                <div className="py-8" key={index}>
+                  <div className="flex flex-row space-x-2 items-center">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <Skeleton className="h-6 w-24" />
+                  </div>
+                  <div className="w-full flex flex-row space-x-0 md:space-x-5 mt-4">
+                    <div className="flex flex-col space-y-2 w-full">
+                      <Skeleton className="h-8 w-1/3" />
+                      <Skeleton className="h-6 w-2/3 md:w-5/6" />
+                      <Skeleton className="h-6 w-2/3" />
+                    </div>
+                    <Skeleton className="h-24 w-36 md:min-w-36 max-w-36" />
+                  </div>
+                  <div className="mt-4 flex flex-row space-x-4 text-center">
+                    <Skeleton className="h-5 w-12" />
+                    <Skeleton className="h-5 w-12" />
+                    <Skeleton className="h-5 w-12" />
+                  </div>
+                  <hr className="mt-5" />
+                </div>
+              );
+            })
+          : blogs.map((blog) => {
+              return <BlogCard key={blog.id} blog={blog} />;
             })}
-        </div>
+      </div>
     </div>
-  )
+  );
 }
 
-export default BlogsLeft
+export default BlogsLeft;

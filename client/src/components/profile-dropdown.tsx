@@ -12,13 +12,17 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { writeAtom } from "@/store/atom/write";
+import axios from "axios";
 import { PencilLine, SquarePen } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import { toast } from "sonner";
 
 export function ProfileDropdown() {
   const navigate = useNavigate();
   const location = useLocation();
+  const writeId = useSetRecoilState(writeAtom);
 
   return (
     <DropdownMenu>
@@ -41,6 +45,26 @@ export function ProfileDropdown() {
             <button
               className="w-full flex space-x-2"
               onClick={() => {
+                toast.promise(
+                  axios.post(
+                    `${import.meta.env.VITE_domain_uri}/blog`,
+                    { title : 'Untitled', content: {} },
+                    {
+                      headers: {
+                        "Content-Type": "application/json;charset=UTF-8",
+                        Authorization: "Bearer " + localStorage.getItem("token"),
+                      },
+                    }
+                  ),
+                  {
+                    loading: "Creating...",
+                    success:(res) => {
+                      writeId(() => res.data)
+                      return "Created successfully!"
+                      },
+                    error: "Failed to create!",
+                  }
+                );
                 navigate("/write");
               }}
             >

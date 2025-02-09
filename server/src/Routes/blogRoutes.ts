@@ -105,8 +105,33 @@ blogRoutes.put("/", async (c) => {
   }
 });
 
-blogRoutes.get("/all", async (c) => {
-  const id = c.req.param("id");
+blogRoutes.put("/publish", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  const {id} = await c.req.json();
+
+  try {
+    const post = await prisma.post.update({
+      where: {
+        id: id,
+      },
+      data: {
+        published: true,
+      },
+    });
+    return c.json({
+      id: post.id,
+    });
+  } catch (err) {
+    c.json({
+      error : "Something went wrong"
+    })
+  }
+});
+
+blogRoutes.get("/", async (c) => {
 
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
@@ -114,6 +139,33 @@ blogRoutes.get("/all", async (c) => {
 
   try {
     const post = await prisma.post.findMany({
+      where : {
+        authorId: c.get('userId')
+      },
+      orderBy : {
+        createdAt : 'desc'
+      },
+    });
+  
+    return c.json({ post });
+  } catch (err) {
+    c.json({
+      error : "Something went wrong"
+    })
+  }
+}); 
+
+blogRoutes.get("/all", async (c) => {
+
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const post = await prisma.post.findMany({
+      where : {
+        published: true
+      },
       orderBy : {
         createdAt : 'desc'
       },
