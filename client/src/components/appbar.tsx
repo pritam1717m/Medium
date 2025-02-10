@@ -5,7 +5,6 @@ import { Input } from "./ui/input";
 import { ModeToggle } from "./mode-toggle";
 import { ProfileDropdown } from "./profile-dropdown";
 import { useSetRecoilState } from "recoil";
-import { userAtom } from "@/store/atom/user";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import axios from "axios";
@@ -44,7 +43,7 @@ function AppBar() {
     <div>
       <div className="top-0 h-[60px] w-full py-5 px-1 md:px-20 lg:px-30 xl:px-40 flex justify-between items-center border-b border-slate-200 bg-orange-50 text-black transition-all duration-400">
         <div className="w-full flex flex-row justify-between md:space-x-5 transition-all duration-400">
-          <div className="w-40 bg-[url(./src/assets/images/Wordmark.svg)] bg-no-repeat bg-[auto_25px] bg-center" onClick={() => navigate('/')}></div>
+          <div className="w-40 bg-[url(/Wordmark.svg)] bg-no-repeat bg-[auto_25px] bg-center" onClick={() => navigate('/')}></div>
           <div className="flex space-x-5 items-center">
             <div className="hidden md:flex list-none space-x-5 font-[HostGrotesk] text-black text-sm">
               {appbarLinks.map((link) => (
@@ -72,7 +71,7 @@ function AppBar() {
   ) : (
     <div className="top-0 h-[60px] w-full py-2.5 md:px-10 flex justify-between items-center border-b border-slate-200 bg-gray-50 dark:bg-slate-950 text-black dark:text-white transition-all duration-400">
       <div className="flex flex-row md:space-x-5 transition-all duration-400">
-        <div className="w-40 bg-[url(./src/assets/images/Wordmark.svg)] bg-no-repeat bg-[auto_25px] bg-center dark:bg-[url(./src/assets/images/Wordmark-White.svg)]" onClick={() => navigate('/blogs')}></div>
+        <div className="w-40 bg-[url(/Wordmark.svg)] bg-no-repeat bg-[auto_25px] bg-center dark:bg-[url(/Wordmark-White.svg)]" onClick={() => navigate('/blogs')}></div>
         <div className="flex items-center rounded-full md:bg-gray-100 md:dark:bg-gray-800">
           <Search
             className="ml-5 md:ml-3 transition-all duration-400"

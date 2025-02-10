@@ -27,7 +27,7 @@ export function ProfileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="w-9 h-9 rounded-full bg-[url(./src/assets/images/profile.jpg)] bg-no-repeat bg-[auto_40px] bg-center"></Button>
+        <Button className="w-9 h-9 rounded-full bg-[url(/profile.jpg)] bg-no-repeat bg-[auto_40px] bg-center"></Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 mr-5">
         <DropdownMenuItem>

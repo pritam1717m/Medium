@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Avatar from "./avatar";
 
 type Blog = {
@@ -10,13 +11,16 @@ type Blog = {
 
 function BlogCard({ blog }: { blog: Blog }) {
   const content = getContent(blog.content)
+  const navigate = useNavigate()
   return (
     <div className="py-8 flex flex-col space-y-2 border-b border-slate-200 dark:border-slate-700 font-[HostGrotesk]">
       <div className="flex flex-row space-x-2">
         <Avatar label={blog.author} />
         <p>by {blog.author}</p>
       </div>
-      <div className="w-full flex flex-row space-x-5">
+      <div className="w-full flex flex-row space-x-5 cursor-pointer" onClick={() => {
+        navigate(`/blogs/${blog.id}`)
+      }}>
         <div className="mt-2 flex flex-col space-y-2">
           <p className="text-2xl font-extrabold text-wrap">{blog.title}</p>
           <p className="text-slate-500 font-medium">

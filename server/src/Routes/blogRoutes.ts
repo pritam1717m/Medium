@@ -113,6 +113,17 @@ blogRoutes.put("/publish", async (c) => {
   const {id} = await c.req.json();
 
   try {
+    const isContent = await prisma.post.findFirst({
+      where: {
+        id : id
+      }
+    })
+    if (isContent?.content && typeof isContent.content === "object") {
+      if (Object.keys(isContent.content as object).length === 0) {
+        c.status(404);
+        return c.json({ error: "Content not found" });
+      }
+    }
     const post = await prisma.post.update({
       where: {
         id: id,
