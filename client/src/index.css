@@ -11,6 +11,11 @@
     src:local("GT-Super-Text-Bold"),
     url('./assets/fonts/GT-Super-Text-Bold.otf') 
   }
+  @font-face{
+    font-family: "georgia";
+    src:local("georgia"),
+    url('./assets/fonts/georgia.ttf') 
+  }
 @layer base {
   :root {
         --background: 0 0% 100%;

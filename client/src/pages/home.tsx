@@ -14,7 +14,7 @@ function Home() {
     }
   }, []);
   return (
-    <div className="h-screen w-screen flex flex-col justify-between bg-orange-50 bg-[url(./src/assets/images/bg.png)] bg-no-repeat bg-[auto_600px] bg-right">
+    <div className="h-screen w-screen flex flex-col justify-between bg-orange-50 bg-[url(/bg.png)] bg-no-repeat bg-[auto_600px] bg-right">
       <AppBar />
       
       <div className="w-full h-full px-5 md:px-20 lg:px-30 xl:px-40 text-black flex flex-col justify-center space-y-10 backdrop-blur-xl lg:backdrop-blur-none">
