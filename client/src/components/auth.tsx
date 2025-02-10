@@ -171,7 +171,7 @@ export function Auth({
                         loading: "Signing up...",
                         success: (response) => {
                           localStorage.setItem("token", response.data.token);
-                          navigate("/");
+                          navigate("/blogs");
                           return "Account created successfully!";
                         },
                         error: (response) => {
