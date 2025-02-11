@@ -47,14 +47,20 @@ export function Auth({
           {label}
         </a>
       </DialogTrigger>
-      <DialogContent className="px-10 md:max-w-[425px] flex flex-col items-center justify-center font-[HostGrotesk] bg-transparent backdrop-blur-3xl border-slate-300 shadow-4xl">
+      <DialogContent className="px-10 md:max-w-[425px] flex flex-col items-center justify-center font-[HostGrotesk] bg-blue-50/40 backdrop-blur-xl border-slate-300 shadow-2xl">
         <DialogTitle></DialogTitle>
         <Tabs defaultValue="signin" className="w-[400px]">
           <TabsList className="grid w-full grid-cols-2 bg-transparent space-x-1">
-            <TabsTrigger value="signin" className="border border-black data-[state=active]:bg-black data-[state=active]:text-white text-black ">
+            <TabsTrigger
+              value="signin"
+              className="border border-black data-[state=active]:bg-black data-[state=active]:text-white text-black "
+            >
               SignIn
             </TabsTrigger>
-            <TabsTrigger value="signup" className="border border-black data-[state=active]:bg-black data-[state=active]:text-white text-black">
+            <TabsTrigger
+              value="signup"
+              className="border border-black data-[state=active]:bg-black data-[state=active]:text-white text-black"
+            >
               SignUp
             </TabsTrigger>
           </TabsList>
@@ -88,6 +94,7 @@ export function Auth({
               </CardContent>
               <CardFooter>
                 <Button
+                  variant={"secondary"}
                   onClick={async () => {
                     toast.promise(
                       axios.post(
@@ -98,7 +105,7 @@ export function Auth({
                         loading: "Signing in...",
                         success: (response) => {
                           localStorage.setItem("token", response.data.token);
-                          setUser(response.data)
+                          setUser(response.data);
                           navigate("/blogs");
 
                           return "Signed in successfully!";

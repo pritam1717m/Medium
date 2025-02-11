@@ -6,25 +6,30 @@ type Blog = {
   title: string;
   content: any;
   time: string;
-  author: string;
+  author?: string;
 };
 
 function BlogCard({ blog }: { blog: Blog }) {
-  const content = getContent(blog.content)
-  const navigate = useNavigate()
+  const content = getContent(blog.content);
+  const navigate = useNavigate();
   return (
     <div className="py-8 flex flex-col space-y-2 border-b border-slate-200 dark:border-slate-700 font-[HostGrotesk]">
-      <div className="flex flex-row space-x-2">
-        <Avatar label={blog.author} />
-        <p>by {blog.author}</p>
-      </div>
-      <div className="w-full flex flex-row space-x-5 cursor-pointer" onClick={() => {
-        navigate(`/blogs/${blog.id}`)
-      }}>
+      {blog.author && (
+        <div className="flex flex-row space-x-2">
+          <Avatar label={blog.author} />
+          <p>by {blog.author}</p>
+        </div>
+      )}
+      <div
+        className="w-full flex flex-row space-x-5 cursor-pointer"
+        onClick={() => {
+          navigate(`/blogs/${blog.id}`);
+        }}
+      >
         <div className="mt-2 flex flex-col space-y-2">
           <p className="text-2xl font-extrabold text-wrap">{blog.title}</p>
           <p className="text-slate-500 font-medium">
-            {content.length >= 130 ? content.slice(0,130)+"...":content}
+            {content.length >= 130 ? content.slice(0, 130) + "..." : content}
           </p>
         </div>
         <div className="w-0 md:min-w-36 max-w-26"></div>
@@ -38,7 +43,7 @@ function BlogCard({ blog }: { blog: Blog }) {
   );
 }
 
-const formatTime = (timestamp: string | number | Date): string => {
+export const formatTime = (timestamp: string | number | Date): string => {
   const now = new Date();
   const givenTime = new Date(timestamp);
   const diffMs = now.getTime() - givenTime.getTime();
@@ -85,11 +90,13 @@ const formatTime = (timestamp: string | number | Date): string => {
   }
 };
 
-function getContent(content: any): string {
+export function getContent(content: any): string {
   if (content && Array.isArray(content.blocks)) {
-    const paragraphBlock = content.blocks.find((block: any) => block.type === "paragraph");
+    const paragraphBlock = content.blocks.find(
+      (block: any) => block.type === "paragraph"
+    );
     return paragraphBlock ? paragraphBlock.data.text : "";
   }
-  return ""; 
+  return "";
 }
 export default BlogCard;

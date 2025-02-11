@@ -5,7 +5,7 @@ export const blogAtom = atom<{
     title: string;
     content: {};
     time: string;
-    author: string;
+    author?: string;
   }[]>({
     key: "blogAtom",
     default: [],
