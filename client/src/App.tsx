@@ -6,6 +6,7 @@ import Write from "./pages/write";
 import Blogs from "./pages/blogs";
 import { RecoilRoot } from "recoil";
 import Blog from "./pages/blog";
+import Draft from "./pages/draft";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:id" element={<Blog />} />
             <Route path="/write" element={<Write />} />
+            <Route path="/draft" element={<Draft/>} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

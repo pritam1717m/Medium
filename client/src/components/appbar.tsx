@@ -91,7 +91,7 @@ function AppBar() {
             <button
               className="flex space-x-2"
               onClick={() => {
-                navigate("/write");
+                navigate("/draft");
               }}
             >
               <PencilLine strokeWidth={0.5} absoluteStrokeWidth />

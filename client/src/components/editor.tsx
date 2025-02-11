@@ -21,6 +21,11 @@ import {
 function Editor() {
   const [title, setTitle] = useState("Untitled");
   const [isMounted, setIsMounted] = useState(false);
+  const [savedContent, setSavedContent] = useState({
+    time: 0,
+    blocks: [],
+    version: "",
+  });
   const writeId = useRecoilValue(writeAtom);
 
   const ref = useRef<EditorJS | null>(null);
@@ -32,22 +37,50 @@ function Editor() {
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return;
+    const fetchBlogContent = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_domain_uri}/blog/${writeId.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
 
+        setSavedContent((prev) => ({
+          ...prev,
+          time: res.data.post.content.time,
+          blocks: res.data.post.content.blocks,
+          version: res.data.post.content.version
+        }));
+      } catch (error) {
+        console.error("Error fetching blog:", error);
+      }
+    };
+
+    fetchBlogContent();
+  }, [writeId.id]);
+
+  useEffect(() => {
+    if (!isMounted || !savedContent.blocks.length) return;  
+  
     const initializeEditor = async () => {
       if (ref.current) return;
-
-      const { default: EditorJS } = await import("@editorjs/editorjs");
-      const { default: Header }: any = await import("@editorjs/header");
-      const { default: Table }: any = await import("@editorjs/table");
-      const { default: List }: any = await import("@editorjs/list");
-      const { default: Code }: any = await import("@editorjs/code");
-      const { default: Paragraph }: any = await import("@editorjs/paragraph");
-      const { default: Quote }: any = await import("@editorjs/quote");
-      const { default: Embed }: any = await import("@editorjs/embed");
-
+  
+      const { default: EditorJS } : any = await import("@editorjs/editorjs");
+      const { default: Header } : any = await import("@editorjs/header");
+      const { default: Table } : any = await import("@editorjs/table");
+      const { default: List } :any = await import("@editorjs/list");
+      const { default: Code } : any = await import("@editorjs/code");
+      const { default: Paragraph } : any = await import("@editorjs/paragraph");
+      const { default: Quote } : any = await import("@editorjs/quote");
+      const { default: Embed } : any = await import("@editorjs/embed");
+  
       ref.current = new EditorJS({
         holder: "editorjs",
+        data: savedContent,  // Load saved data
         autofocus: true,
         tools: {
           header: {
@@ -75,7 +108,6 @@ function Editor() {
             config: {
               services: {
                 youtube: true,
-                coub: true,
                 facebook: true,
                 instagram: true,
                 codepen: true,
@@ -89,14 +121,15 @@ function Editor() {
         },
       });
     };
-
+  
     initializeEditor();
-
+  
     return () => {
       ref.current?.destroy();
       ref.current = null;
     };
-  }, [isMounted]);
+  }, [isMounted, savedContent]); // Depend on `savedContent`
+  
 
   const save = useCallback(() => {
     if (!ref.current) return;
@@ -207,9 +240,7 @@ function Editor() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={publish} >
-                  Publish
-              </AlertDialogAction>
+              <AlertDialogAction onClick={publish}>Publish</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

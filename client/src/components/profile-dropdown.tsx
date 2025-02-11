@@ -15,13 +15,12 @@ import {
 import { writeAtom } from "@/store/atom/write";
 import axios from "axios";
 import { PencilLine, SquarePen } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { toast } from "sonner";
 
 export function ProfileDropdown() {
   const navigate = useNavigate();
-  const location = useLocation();
   const writeId = useSetRecoilState(writeAtom);
 
   return (
@@ -31,47 +30,46 @@ export function ProfileDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 mr-5">
         <DropdownMenuItem>
-          {location.pathname == "/write" ? (
-            <button
-              className="w-full flex space-x-2"
-              onClick={() => {
-                navigate("/write");
-              }}
-            >
-              <PencilLine strokeWidth={0.5} absoluteStrokeWidth />
-              <p className="font-light">Draft</p>
-            </button>
-          ) : (
-            <button
-              className="w-full flex space-x-2"
-              onClick={() => {
-                toast.promise(
-                  axios.post(
-                    `${import.meta.env.VITE_domain_uri}/blog`,
-                    { title : 'Untitled', content: {} },
-                    {
-                      headers: {
-                        "Content-Type": "application/json;charset=UTF-8",
-                        Authorization: "Bearer " + localStorage.getItem("token"),
-                      },
-                    }
-                  ),
+          <button
+            className="w-full flex space-x-2"
+            onClick={() => {
+              toast.promise(
+                axios.post(
+                  `${import.meta.env.VITE_domain_uri}/blog`,
+                  { title: "Untitled", content: {} },
                   {
-                    loading: "Creating...",
-                    success:(res) => {
-                      writeId(() => res.data)
-                      return "Created successfully!"
-                      },
-                    error: "Failed to create!",
+                    headers: {
+                      "Content-Type": "application/json;charset=UTF-8",
+                      Authorization: "Bearer " + localStorage.getItem("token"),
+                    },
                   }
-                );
-                navigate("/write");
-              }}
-            >
-              <SquarePen strokeWidth={0.5} absoluteStrokeWidth />
-              <p className="font-light">Write</p>
-            </button>
-          )}
+                ),
+                {
+                  loading: "Creating...",
+                  success: (res) => {
+                    writeId(() => res.data);
+                    return "Created successfully!";
+                  },
+                  error: "Failed to create!",
+                }
+              );
+              navigate("/write");
+            }}
+          >
+            <SquarePen strokeWidth={0.5} absoluteStrokeWidth />
+            <p className="font-light">Write</p>
+          </button>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <button
+            className="w-full flex space-x-2"
+            onClick={() => {
+              navigate("/draft");
+            }}
+          >
+            <PencilLine strokeWidth={0.5} absoluteStrokeWidth />
+            <p className="font-light">Draft</p>
+          </button>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
