@@ -21,7 +21,7 @@ function DraftBlogCard({ blog }: { blog: Blog }) {
           className="w-full flex flex-row space-x-5 cursor-pointer"
           onClick={() => {
             setBlogId({id : blog.id})
-            navigate("/write");
+            navigate("/edit");
           }}
         >
           <div className="mt-2 flex flex-col space-y-2">

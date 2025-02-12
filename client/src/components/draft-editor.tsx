@@ -19,10 +19,16 @@ import {
 } from "@/components/ui/alert-dialog";
 
 
-function Editor() {
-  const [title, setTitle] = useState("Untitled");
+function DraftEditor() {
+  const [title, setTitle] = useState("");
   const [isMounted, setIsMounted] = useState(false);
+  const [savedContent, setSavedContent] = useState({
+    time: 0,
+    blocks: [],
+    version: "",
+  });
   const writeId = useRecoilValue(writeAtom);
+
   const ref = useRef<EditorJS | null>(null);
 
   useEffect(() => {
@@ -32,7 +38,35 @@ function Editor() {
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return;  
+    const fetchBlogContent = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_domain_uri}/blog/${writeId.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+
+        setSavedContent((prev) => ({
+          ...prev,
+          time: res.data.post.content.time,
+          blocks: res.data.post.content.blocks,
+          version: res.data.post.content.version
+        }));
+        setTitle(res.data.post.title)
+      } catch (error) {
+        console.error("Error fetching blog:", error);
+      }
+    };
+
+    fetchBlogContent();
+  }, [writeId.id]);
+
+  useEffect(() => {
+    if (!isMounted || !savedContent.blocks.length) return;  
   
     const initializeEditor = async () => {
       if (ref.current) return;
@@ -48,6 +82,7 @@ function Editor() {
   
       ref.current = new EditorJS({
         holder: "editorjs",
+        data: savedContent,  
         autofocus: true,
         tools: {
           header: {
@@ -95,7 +130,7 @@ function Editor() {
       ref.current?.destroy();
       ref.current = null;
     };
-  }, [isMounted]); 
+  }, [isMounted, savedContent, title]); 
   
 
   const save = useCallback(() => {
@@ -170,7 +205,7 @@ function Editor() {
           <div className="w-full flex flex-col">
             <Input
               type="text"
-              defaultValue="Untitled"
+              defaultValue={title}
               className="text-lg font-semibold border-none ring-0 shadow-none focus-visible:ring-0 outline-none bg-transparent w-full px-2 transition-all duration-200"
               style={{ fontSize: "1.875rem", lineHeight: "2.25rem" }}
               onChange={(e) => {
@@ -219,4 +254,4 @@ function Editor() {
   );
 }
 
-export default Editor;
+export default DraftEditor;

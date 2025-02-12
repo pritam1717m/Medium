@@ -197,6 +197,31 @@ blogRoutes.get("/all", async (c) => {
   }
 }); 
 
+blogRoutes.get("/draft", async (c) => {
+
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const post = await prisma.post.findMany({
+      where : {
+        authorId: c.get('userId'),
+        published: false
+      },
+      orderBy : {
+        createdAt : 'desc'
+      }
+    });
+  
+    return c.json({ post });
+  } catch (err) {
+    c.json({
+      error : "Something went wrong"
+    })
+  }
+}); 
+
 blogRoutes.get("/:id", async (c) => {
   const id = c.req.param("id");
 
@@ -218,5 +243,26 @@ blogRoutes.get("/:id", async (c) => {
     })
   }
 }); 
+
+blogRoutes.delete("/:id", async (c) => {
+  const id = c.req.param("id");
+
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    await prisma.post.delete({
+      where: {
+        id: id,
+      },
+    });
+    return c.json({message : "Deleted successfully"})
+  } catch (err) {
+    c.json({
+      error : "Something went wrong"
+    })
+  }
+});
 
 export default blogRoutes;
