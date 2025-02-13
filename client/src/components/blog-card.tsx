@@ -15,7 +15,7 @@ function BlogCard({ blog }: { blog: Blog }) {
   return (
     <div className="py-8 flex flex-col space-y-2 border-b border-slate-200 dark:border-slate-700 font-[HostGrotesk]">
       {blog.author && (
-        <div className="flex flex-row space-x-2">
+        <div className="flex flex-row items-center space-x-2 dark:text-slate-200">
           <Avatar label={blog.author} />
           <p>by {blog.author}</p>
         </div>
@@ -27,7 +27,7 @@ function BlogCard({ blog }: { blog: Blog }) {
         }}
       >
         <div className="mt-2 flex flex-col space-y-2">
-          <p className="text-2xl font-extrabold text-wrap">{blog.title}</p>
+          <p className="text-2xl font-extrabold text-wrap dark:text-slate-200/90">{blog.title}</p>
           <p className="text-slate-500 font-medium">
             {content.length >= 130 ? content.slice(0, 130) + "..." : content}
           </p>

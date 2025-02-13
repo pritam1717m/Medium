@@ -26,7 +26,7 @@ function Blogs() {
         <div className="min-w-full md:w-2/3 lg:min-w-[728px] lg:max-w-[728px]">  
             <BlogsLeft />
         </div>
-        <div className="max-w-0 md: w-1/3 lg:min-w-96 lg:max-w-52 bg-orange-50 hidden md:block">
+        <div className=" max-w-0 md: w-1/3 lg:min-w-96 lg:max-w-52 hidden md:block">
           <BlogsRight />
         </div>
       </div>
