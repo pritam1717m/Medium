@@ -66,7 +66,7 @@ function DraftEditor() {
   }, [writeId.id]);
 
   useEffect(() => {
-    if (!isMounted || !savedContent.blocks.length) return;  
+    if (!isMounted) return;  
   
     const initializeEditor = async () => {
       if (ref.current) return;
@@ -196,8 +196,8 @@ function DraftEditor() {
   }, [writeId.id]);
 
   return (
-    <div className="flex flex-col px-5 md:flex-row  items-start justify-evenly dark:bg-gray-950 transition-colors duration-300">
-      <div className="w-full max-w-6xl transition-all duration-300">
+    <div className="flex flex-col px-5 md:flex-row  items-start justify-evenly dark:bg-gray-950 transition-colors duration-100">
+      <div className="w-full max-w-6xl transition-all duration-100">
         <div className="flex items-cente mb-1">
           <p className="text-2xl font-semibold text-gray-800 dark:text-white">
             ✏️

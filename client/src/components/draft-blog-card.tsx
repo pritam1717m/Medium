@@ -16,7 +16,7 @@ function DraftBlogCard({ blog }: { blog: Blog }) {
     const navigate = useNavigate();
     const setBlogId = useSetRecoilState(writeAtom);
     return (
-      <div className="py-8 flex flex-col space-y-2 border-b border-slate-200 dark:border-slate-700 font-[HostGrotesk]">
+      <div className="w-full py-8 flex flex-col space-y-2 font-[HostGrotesk]">
         <div
           className="w-full flex flex-row space-x-5 cursor-pointer"
           onClick={() => {

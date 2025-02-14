@@ -8,6 +8,7 @@ import { RecoilRoot } from "recoil";
 import Blog from "./pages/blog";
 import Draft from "./pages/draft";
 import Edit from "./pages/edit";
+import Stories from "./pages/stories";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/write" element={<Write />} />
             <Route path="/edit" element={<Edit />} />
             <Route path="/draft" element={<Draft/>} />
+            <Route path="/stories" element={<Stories />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

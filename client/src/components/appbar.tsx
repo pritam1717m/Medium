@@ -104,7 +104,10 @@ function AppBar() {
                   toast.promise(
                     axios.post(
                       `${import.meta.env.VITE_domain_uri}/blog`,
-                      { title : 'Untitled', content: {} },
+                      {
+                        title: "Untitled",
+                        content: { time: 0, blocks: [], version: "" },
+                      },
                       {
                         headers: {
                           "Content-Type": "application/json;charset=UTF-8",
