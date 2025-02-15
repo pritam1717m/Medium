@@ -222,6 +222,31 @@ blogRoutes.get("/draft", async (c) => {
   }
 }); 
 
+blogRoutes.get("/published", async (c) => {
+
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const post = await prisma.post.findMany({
+      where : {
+        authorId: c.get('userId'),
+        published: true
+      },
+      orderBy : {
+        createdAt : 'desc'
+      }
+    });
+  
+    return c.json({ post });
+  } catch (err) {
+    c.json({
+      error : "Something went wrong"
+    })
+  }
+}); 
+
 blogRoutes.get("/:id", async (c) => {
   const id = c.req.param("id");
 

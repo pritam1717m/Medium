@@ -86,7 +86,7 @@ export function ProfileDropdown() {
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>GitHub</DropdownMenuItem>
+        <DropdownMenuItem>Membership</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Button

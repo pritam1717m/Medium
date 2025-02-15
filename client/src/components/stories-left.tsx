@@ -58,7 +58,7 @@ export default function StoriesLeft() {
           <TabsContent value="draft" className="mx-5">
             <DraftBlog />
           </TabsContent>
-          <TabsContent value="published">
+          <TabsContent value="published" className="mx-5">
             <PublishedBlog />
           </TabsContent>
         </Tabs>
