@@ -32,7 +32,7 @@ export default function ProfileLeft() {
             time: item.updatedAt, 
             author: item.author.name, 
           }));
-          
+          setBlogs(formattedBlogs)
           setAuthor(res.data.post[0]?.author.name || "Unknown Author");
           setIsLoading(false);
           setIsLoading(false)
