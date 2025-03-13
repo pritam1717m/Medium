@@ -105,4 +105,8 @@ userRoutes.post("/signin", async (c) => {
   }
 });
 
+userRoutes.get("/me", async(req, res) => {
+  
+})
+
 export default userRoutes;
