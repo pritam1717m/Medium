@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { signUpBody, signInBody } from "@rafael1717/common";
-import { sign } from "hono/jwt";
+import { sign, verify } from "hono/jwt";
 import bcrypt from "bcryptjs";
 
 const userRoutes = new Hono<{
@@ -56,7 +56,7 @@ userRoutes.post("/signup", async (c) => {
 
     const token = await sign({ id: user.id }, c.env.JWT_SECRET);
 
-    return c.json({ token });
+    return c.json({user, token });
   } catch (err) {
     return c.json({ error: "Somthing went wrong" });
   }
@@ -95,7 +95,7 @@ userRoutes.post("/signin", async (c) => {
       }
 
       const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-      return c.json({ token });
+      return c.json({user, token });
     } catch (err) {
       c.status(403);
       return c.json({ error: "Something went wrong", err });
@@ -104,9 +104,5 @@ userRoutes.post("/signin", async (c) => {
     return c.json({ error: "Somthing went wrong" });
   }
 });
-
-userRoutes.get("/me", async(req, res) => {
-  
-})
 
 export default userRoutes;
