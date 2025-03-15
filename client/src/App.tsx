@@ -4,16 +4,16 @@ import { ThemeProvider } from "./components/theme-provider";
 import { Toaster } from "sonner";
 import Write from "./pages/write";
 import Blogs from "./pages/blogs";
-import { RecoilRoot } from "recoil";
 import Blog from "./pages/blog";
 import Draft from "./pages/draft";
 import Edit from "./pages/edit";
 import Stories from "./pages/stories";
 import Profile from "./pages/profile";
+import {Provider}  from 'jotai'
 
 function App() {
   return (
-    <RecoilRoot>
+    <Provider>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Toaster richColors />
         <BrowserRouter>
@@ -29,7 +29,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
-    </RecoilRoot>
+    </Provider>
   );
 }
 

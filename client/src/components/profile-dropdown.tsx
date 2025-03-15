@@ -11,12 +11,12 @@ import { writeAtom } from "@/store/atom/write";
 import axios from "axios";
 import { PencilLine, ScrollText, SquarePen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useSetAtom } from "jotai";
 import { toast } from "sonner";
 
 export function ProfileDropdown() {
   const navigate = useNavigate();
-  const writeId = useSetRecoilState(writeAtom);
+  const writeId = useSetAtom(writeAtom);
 
   return (
     <DropdownMenu>

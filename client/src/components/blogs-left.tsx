@@ -1,4 +1,4 @@
-import { useRecoilState } from "recoil";
+import { useAtom} from "jotai";
 import BlogCard from "./blog-card";
 import { blogAtom } from "@/store/atom/blogs";
 import { useEffect, useState } from "react";
@@ -6,7 +6,7 @@ import { Skeleton } from "./ui/skeleton";
 import axios from "axios";
 
 function BlogsLeft() {
-  const [blogs, setBlogs] = useRecoilState(blogAtom);
+  const [blogs, setBlogs] = useAtom(blogAtom);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {

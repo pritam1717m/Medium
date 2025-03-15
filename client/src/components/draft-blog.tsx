@@ -15,11 +15,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { blogAtom } from "@/store/atom/blogs";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 import { toast } from "sonner";
 
 export default function DraftBlog() {
-  const [blogs, setBlogs] = useRecoilState(blogAtom);
+  const [blogs, setBlogs] = useAtom(blogAtom);
   const [isLoading, setIsLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
   useEffect(() => {

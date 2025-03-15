@@ -16,7 +16,7 @@ import { SignInInput, SignUpInput } from "@rafael1717/common";
 import { toast } from "sonner";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useSetAtom } from "jotai";
 import { userAtom } from "@/store/atom/user";
 
 export function Auth({
@@ -38,7 +38,7 @@ export function Auth({
     password: "",
   });
 
-  const setUser = useSetRecoilState(userAtom);
+  const setUser = useSetAtom(userAtom);
 
   return (
     <Dialog>

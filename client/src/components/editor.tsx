@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import Button from "./button";
 import { Input } from "./ui/input";
-import { useRecoilValue } from "recoil";
+import { useAtomValue} from "jotai";
 import { writeAtom } from "@/store/atom/write";
 import {
   AlertDialog,
@@ -22,7 +22,7 @@ import {
 function Editor() {
   const [title, setTitle] = useState("Untitled");
   const [isMounted, setIsMounted] = useState(false);
-  const writeId = useRecoilValue(writeAtom);
+  const writeId = useAtomValue(writeAtom);
   const ref = useRef<EditorJS | null>(null);
 
   useEffect(() => {

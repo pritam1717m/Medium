@@ -2,14 +2,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { writeAtom } from "@/store/atom/write";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useSetAtom } from "jotai";
 import { toast } from "sonner";
 import DraftBlog from "./draft-blog";
 import PublishedBlog from "./published-blog";
 
 export default function StoriesLeft() {
   const navigate = useNavigate();
-  const writeId = useSetRecoilState(writeAtom);
+  const writeId = useSetAtom(writeAtom);
 
   return (
     <div className="w-full px-10 flex flex-col justify-center items-center font-[HostGrotesk]">

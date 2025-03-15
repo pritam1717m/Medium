@@ -4,7 +4,7 @@ import Button from "./button";
 import { Input } from "./ui/input";
 import { ModeToggle } from "./mode-toggle";
 import { ProfileDropdown } from "./profile-dropdown";
-import { useSetRecoilState } from "recoil";
+import { useSetAtom } from "jotai";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import axios from "axios";
@@ -31,7 +31,7 @@ const appbarLinks = [
 function AppBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const writeId = useSetRecoilState(writeAtom);
+  const writeId = useSetAtom(writeAtom);
 
   let user = true;
   if (!localStorage.getItem("token")) {

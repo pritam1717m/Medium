@@ -3,14 +3,14 @@ import { userAtom } from "@/store/atom/user";
 import axios from "axios";
 import { MoreHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useAtomValue, useAtom } from "jotai";
 import ProfileBlog from "./profile-blog";
 
 export default function ProfileLeft() {
 
-  const [blogs, setBlogs] = useRecoilState(blogAtom);
+  const [blogs, setBlogs] = useAtom(blogAtom);
   const [isLoading, setIsLoading] = useState(false);
-  const user = useRecoilValue(userAtom);
+  const user = useAtomValue(userAtom);
 
   useEffect(() => {
     setIsLoading(true);

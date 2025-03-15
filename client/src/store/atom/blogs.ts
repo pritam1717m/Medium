@@ -1,4 +1,4 @@
-import {atom} from 'recoil'
+import {atom} from 'jotai'
 
 export const blogAtom = atom<{
     id: string;
@@ -6,7 +6,4 @@ export const blogAtom = atom<{
     content: {};
     time: string;
     author?: string;
-  }[]>({
-    key: "blogAtom",
-    default: [],
-  });
+  }[]>([]);

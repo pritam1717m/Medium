@@ -1,10 +1,7 @@
-import {atom} from 'recoil'
+import { atom } from "jotai";
 
 export const writeAtom = atom<{
-    id: string;
-  }>({
-    key: "writeAtom",
-    default: {
-      id: "",
-    },
-  });
+  id: string;
+}>({
+  id: "",
+});

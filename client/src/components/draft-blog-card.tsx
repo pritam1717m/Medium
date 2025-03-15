@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { formatTime, getContent } from "./blog-card";
-import { useSetRecoilState } from "recoil";
+import { useSetAtom } from "jotai";
 import { writeAtom } from "@/store/atom/write";
 
 type Blog = {
@@ -14,7 +14,7 @@ type Blog = {
 function DraftBlogCard({ blog }: { blog: Blog }) {
     const content = getContent(blog.content);
     const navigate = useNavigate();
-    const setBlogId = useSetRecoilState(writeAtom);
+    const setBlogId = useSetAtom(writeAtom);
     return (
       <div className="w-full py-8 flex flex-col space-y-2 font-[HostGrotesk]">
         <div

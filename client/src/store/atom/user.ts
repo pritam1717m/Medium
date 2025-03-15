@@ -1,4 +1,4 @@
-import {atom} from 'recoil'
+import {atom} from 'jotai'
 
 export const userAtom = atom<{
     id: string;
@@ -12,17 +12,14 @@ export const userAtom = atom<{
     following?: Array<object>;
     createdAt: string;
   }>({
-    key: "userAtom",
-    default: {
-      id: "",
-      name: "",
-      email: "",
-      about: "",
-      image: "",
-      links: {},
-      posts: [{}],
-      followers: [{}],
-      following: [{}],
-      createdAt: "",
-    },
+    id: "",
+    name: "",
+    email: "",
+    about: "",
+    image: "",
+    links: {},
+    posts: [{}],
+    followers: [{}],
+    following: [{}],
+    createdAt: "",
   });
