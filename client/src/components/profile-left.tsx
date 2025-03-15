@@ -5,6 +5,7 @@ import { MoreHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAtomValue, useAtom } from "jotai";
 import ProfileBlog from "./profile-blog";
+import { Skeleton } from "./ui/skeleton";
 
 export default function ProfileLeft() {
 
@@ -47,7 +48,7 @@ export default function ProfileLeft() {
   return (
     <div className="flex flex-col mt-20">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-black">{user.name}</h1>
+        <h1 className="text-3xl font-bold text-black dark:text-slate-100">{user.name}</h1>
         <button>
           <MoreHorizontal className="w-6 h-6" />
         </button>
@@ -58,9 +59,31 @@ export default function ProfileLeft() {
         <p className="text-gray-500">About</p>
       </div>
 
-      <div className="mt-5 p-5">
+      <div className="mt-5">
         {isLoading ? (
-          <p className="text-gray-500 mt-2">Loading...</p>
+          Array.from({ length: 3 }).map((_,index) => {
+            return (
+              <div className="py-8" key={index}>
+                <div className="flex flex-row space-x-2 items-center">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <Skeleton className="h-6 w-24" />
+                </div>
+                <div className="w-full flex flex-row space-x-0 md:space-x-5 mt-4">
+                  <div className="flex flex-col space-y-2 w-full">
+                    <Skeleton className="h-8 w-1/3" />
+                    <Skeleton className="h-6 w-2/3 md:w-5/6" />
+                    <Skeleton className="h-6 w-2/3" />
+                  </div>
+                  <Skeleton className="h-24 w-36 md:min-w-36 max-w-36" />
+                </div>
+                <div className="mt-4 flex flex-row space-x-4 text-center">
+                  <Skeleton className="h-5 w-12" />
+                  <Skeleton className="h-5 w-12" />
+                  <Skeleton className="h-5 w-12" />
+                </div>
+                <hr className="mt-5" />
+              </div>
+            )})
         ) : blogs.length > 0 ? (
           blogs.map((blog) => (
             <ProfileBlog blog={blog} key={blog.id}/>
