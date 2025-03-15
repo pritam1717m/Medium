@@ -4,11 +4,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react({
-    babel: {
-      plugins: ['jotai/babel/plugin-react-refresh'],
-    },
-  })],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
