@@ -9,11 +9,9 @@ import Draft from "./pages/draft";
 import Edit from "./pages/edit";
 import Stories from "./pages/stories";
 import Profile from "./pages/profile";
-import {Provider}  from 'jotai'
 
 function App() {
   return (
-    <Provider>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Toaster richColors />
         <BrowserRouter>
@@ -29,7 +27,6 @@ function App() {
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
-    </Provider>
   );
 }
 

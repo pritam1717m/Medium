@@ -1,6 +1,6 @@
-import {atom} from 'jotai'
+import {atomWithStorage} from 'jotai/utils'
 
-export const userAtom = atom<{
+export const userAtom = atomWithStorage<{
     id: string;
     name: string;
     email: string;
@@ -11,7 +11,7 @@ export const userAtom = atom<{
     followers?: Array<object>;
     following?: Array<object>;
     createdAt: string;
-  }>({
+  }>('user',{
     id: "",
     name: "",
     email: "",
