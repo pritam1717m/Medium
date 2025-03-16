@@ -56,7 +56,7 @@ userRoutes.post("/signup", async (c) => {
 
     const token = await sign({ id: user.id }, c.env.JWT_SECRET);
 
-    return c.json({user, token });
+    return c.json({ user, token });
   } catch (err) {
     return c.json({ error: "Somthing went wrong" });
   }
@@ -95,13 +95,57 @@ userRoutes.post("/signin", async (c) => {
       }
 
       const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-      return c.json({user, token });
+      return c.json({ user, token });
     } catch (err) {
       c.status(403);
       return c.json({ error: "Something went wrong", err });
     }
   } catch (err) {
     return c.json({ error: "Somthing went wrong" });
+  }
+});
+
+userRoutes.put("/update", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  const {name, about, links} = await c.req.json();
+
+  try {
+    const header = c.req.header("Authorization") || "";
+    if (!header.startsWith("Bearer ")) {
+      return c.json({ error: "Missing or invalid authorization header" }, 401);
+    }
+
+    const token = header.split(" ")[1];
+    if (!token) {
+      return c.json({ error: "Token not provided" }, 401);
+    }
+
+    const user = await verify(token, c.env.JWT_SECRET);
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 403);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where : {
+        id : user?.id as string
+      },
+      data : {
+        name : name,
+        about : about,
+        links : links
+      },
+      omit : {
+        password : true
+      }
+    })
+
+    return c.json({updatedUser})
+
+  } catch (e) {
+    return c.json({error : "Something went wrong"}, 403)
   }
 });
 

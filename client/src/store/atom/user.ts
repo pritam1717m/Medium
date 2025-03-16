@@ -17,10 +17,7 @@ export const userAtom = atomWithStorage<{
   email: "",
   about: "",
   image: "",
-  links: [
-    { id: 0, value: "ghjgadhgs" },
-    { id: 1, value: "Ddassddddwed" },
-  ],
+  links: [],
   posts: [{}],
   followers: [{}],
   following: [{}],
