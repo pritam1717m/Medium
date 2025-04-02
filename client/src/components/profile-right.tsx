@@ -21,6 +21,7 @@ export default function ProfileRight() {
           className="w-24 h-24 rounded-full"
         />
         <h2 className="text-lg font-semibold">{user.name}</h2>
+        <h3 className="text-slate-800 dark:text-slate-400">{user.about? user.about : ""}</h3>
         <EditProfile />
         <Link links={user?.links as Links}/>
       </div>

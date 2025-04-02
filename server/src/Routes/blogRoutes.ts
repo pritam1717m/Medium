@@ -290,4 +290,36 @@ blogRoutes.delete("/:id", async (c) => {
   }
 });
 
+blogRoutes.post("/views", async (c) => {
+  const { id } = await c.req.json();
+
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const post = await prisma.post.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    if(post) {
+      post.views.push(c.get("userId"))
+      await prisma.post.update({
+        where : {
+          id : id
+        },
+        data : {
+          views : post.views,
+        }
+      })
+    }
+    return c.json({message : "views updated"})
+  } catch (err) {
+    c.json({
+      error : "Something went wrong"
+    })
+  }
+})
+
 export default blogRoutes;

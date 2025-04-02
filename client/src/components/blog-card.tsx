@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Avatar from "./avatar";
+import axios from "axios";
 
 type Blog = {
   id: string;
@@ -22,8 +23,20 @@ function BlogCard({ blog }: { blog: Blog }) {
       )}
       <div
         className="w-full flex flex-row space-x-5 cursor-pointer"
-        onClick={() => {
+        onClick={async () => {
           navigate(`/blogs/${blog.id}`);
+          await axios.post(
+            `${import.meta.env.VITE_domain_uri}/blog/views`,
+            {
+              id : blog.id
+            },
+            {
+              headers: {
+                "Content-Type": "application/json;charset=UTF-8",
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            }
+          );
         }}
       >
         <div className="mt-2 flex flex-col space-y-2">

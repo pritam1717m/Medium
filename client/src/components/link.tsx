@@ -19,7 +19,7 @@ export default function Link({ links }: { links: Links }) {
             <img
               src={`https://logo.clearbit.com/${url}`}
               alt="logo"
-              className="w-5 h-5 dark:bg-white rounded-full dark:ring-1 ring-green-500"
+              className="w-5 h-5 dark:bg-white rounded-full dark:ring-1 ring-green-700"
             />
             <a href={link.value}>{link.value}</a>
           </div>

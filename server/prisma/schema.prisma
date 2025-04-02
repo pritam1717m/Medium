@@ -14,43 +14,66 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  email    String    @unique
-  name     String?
-  password String
-  about    String?
-  image    String?
-  links    Json?
-  posts    Post[]
-  followers  Follower[] @relation("UserFollowers")
-  following  Follower[] @relation("UserFollowing")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String      @id @default(uuid())
+  email       String      @unique
+  name        String?
+  password    String
+  about       String?
+  image       String?
+  links       Json?
+  posts       Post[]
+  votes       Vote[]
+  views       View[]
+  followers   Follower[]  @relation("UserFollowers")
+  following   Follower[]  @relation("UserFollowing")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 model Post {
-  id        String    @id @default(uuid())
-  title     String
-  content   Json
-  published Boolean  @default(false)
-  publishedAt DateTime  @default(now())
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  String
-  likes     BigInt?
-  views     BigInt?
-  comment   Json?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String      @id @default(uuid())
+  title       String
+  content     Json
+  published   Boolean     @default(false)
+  publishedAt DateTime    @default(now())
+  author      User        @relation(fields: [authorId], references: [id])
+  authorId    String
+  votes       Vote[]      
+  views       View[]  
+  comment     Json?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Vote {
+  userId      String      @unique
+  postId      String      @unique
+  voteType    VoteType
+  User        User        @relation(fields: [userId], references: [id])
+  Post        Post        @relation(fields: [postId], references: [id])
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+model View {
+  userId      String      @unique
+  postId      String      @unique
+  count       BigInt      @default(0)
+  User        User        @relation(fields: [userId], references: [id])
+  Post        Post        @relation(fields: [postId], references: [id])
 }
 
 model Follower {
-  id          String  @id @default(uuid())
+  id          String      @id @default(uuid())
   followerId  String
   followingId String
-  follower   User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
-  following  User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  follower    User        @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User        @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   @@unique([followerId, followingId])
 }
