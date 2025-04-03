@@ -304,13 +304,19 @@ blogRoutes.post("/views", async (c) => {
       },
     });
     if(post) {
-      post.views.push(c.get("userId"))
-      await prisma.post.update({
-        where : {
-          id : id
+      await prisma.view.upsert({
+        where: {
+          userId : c.get("userId"),
         },
-        data : {
-          views : post.views,
+        update: {
+          count: {
+            increment : 1
+          }
+        },
+        create: {
+          userId : c.get("userId"),
+          postId: id,
+          count : 1
         }
       })
     }
