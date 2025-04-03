@@ -78,7 +78,6 @@ export default function EditProfile() {
         {
           loading: "Updating...",
           success: (res) => {
-            console.log(res.data.updatedUser);
             setUser({
               ...user,
               name: res.data.updatedUser.name,
