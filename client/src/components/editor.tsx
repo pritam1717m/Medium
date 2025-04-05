@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 
-function Editor() {
+function  Editor() {
   const [title, setTitle] = useState("Untitled");
   const [isMounted, setIsMounted] = useState(false);
   const writeId = useAtomValue(writeAtom);
@@ -82,6 +82,7 @@ function Editor() {
                 pinterest: true,
                 twitter: true,
                 "twitch-video": true,
+                miro: true,
               },
             },
           },

@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "exports": {
+    "@editorjs/simple-image": "./node_modules/@editorjs/simple-image/dist/simple-image.mjs"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -17,6 +20,7 @@
     "@editorjs/list": "^2.0.4",
     "@editorjs/paragraph": "^2.11.7",
     "@editorjs/quote": "^2.7.6",
+    "@editorjs/simple-image": "^1.6.0",
     "@editorjs/table": "^2.4.3",
     "@radix-ui/react-alert-dialog": "^1.1.6",
     "@radix-ui/react-dialog": "^1.1.5",

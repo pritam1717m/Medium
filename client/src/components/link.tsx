@@ -14,7 +14,7 @@ export default function Link({ links }: { links: Links }) {
     ? links.map((link) => {
         const url = trimURL(link.value)
         return (
-          <div className="flex space-x-2 text-green-600 items-center">
+          <div className="flex space-x-2 text-green-600 items-center" key={link.id}>
             <img
               src={`https://img.logo.dev/${url}?token=${import.meta.env.VITE_LOGO_SECRET}`}
               alt="logo"

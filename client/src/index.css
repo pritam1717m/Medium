@@ -12,9 +12,9 @@
     url('./assets/fonts/GT-Super-Text-Bold.otf') 
   }
   @font-face{
-    font-family: "georgia";
-    src:local("georgia"),
-    url('./assets/fonts/georgia.ttf') 
+    font-family: "Helvetica";
+    src:local("Helvetica"),
+    url('./assets/fonts/Helvetica.ttf') 
   }
 @layer base {
   :root {

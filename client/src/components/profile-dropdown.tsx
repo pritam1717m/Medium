@@ -11,17 +11,21 @@ import { writeAtom } from "@/store/atom/write";
 import axios from "axios";
 import { PencilLine, ScrollText, SquarePen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { toast } from "sonner";
+import { userAtom } from "@/store/atom/user";
 
 export function ProfileDropdown() {
   const navigate = useNavigate();
+  const user = useAtomValue(userAtom);
   const writeId = useSetAtom(writeAtom);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="w-9 h-9 rounded-full bg-[url(/profile.jpg)] bg-no-repeat bg-[auto_40px] bg-center"></Button>
+        <Button className="w-9 h-9 rounded-full bg-black dark:bg-slate-200 text-2xl text-center">
+          {user.name.slice(0,1)}
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 mr-5 space-y-2 text-slate-600 font-semibold font-[HostGrotesk] dark:text-slate-300">
         <DropdownMenuItem>

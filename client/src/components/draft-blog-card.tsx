@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { formatTime, getContent } from "./blog-card";
+import { getContent } from "./blog-card";
 import { useSetAtom } from "jotai";
 import { writeAtom } from "@/store/atom/write";
+import { formatTime } from "@/lib/getTime";
 
 type Blog = {
   id: string;

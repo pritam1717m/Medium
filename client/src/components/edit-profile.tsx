@@ -94,9 +94,6 @@ export default function EditProfile() {
     }
   };
 
-  useEffect(() => {
-  }, []);
-
   return (
     <Dialog>
       <DialogTrigger asChild>
