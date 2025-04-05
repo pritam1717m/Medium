@@ -20,7 +20,7 @@ export default function Link({ links }: { links: Links }) {
               alt="logo"
               className="w-5 h-5 dark:bg-white rounded-full dark:ring-1 ring-green-700"
             />
-            <a href={link.value}>{link.value}</a>
+            <a href={link.value}>{String(url.split(".")[0]).slice(0,1).toUpperCase().concat(String(url.split(".")[0].slice(1)))}</a>
           </div>
         );
       })

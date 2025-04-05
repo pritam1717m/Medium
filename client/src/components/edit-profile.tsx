@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { userAtom } from "@/store/atom/user";
 import axios from "axios";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface Link {
