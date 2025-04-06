@@ -2,7 +2,15 @@ import { userAtom } from "@/store/atom/user";
 import { useAtomValue } from "jotai";
 import Avatar from "./avatar";
 import { formatTime } from "@/lib/getTime";
-import { BookmarkPlus, CircleArrowDown, CircleArrowUp, Disc, Ellipsis, MessageCircleMore, Share, } from "lucide-react";
+import {
+  BookmarkPlus,
+  CircleArrowDown,
+  CircleArrowUp,
+  Disc,
+  Ellipsis,
+  MessageCircleMore,
+  Share,
+} from "lucide-react";
 
 type Block = {
   id: string;
@@ -18,10 +26,14 @@ const RenderContent = ({
   content,
   title,
   time,
+  authorId,
+  author,
 }: {
   content: Content;
   title: string;
   time: string;
+  authorId: string;
+  author: string;
 }) => {
   if (!content || !content.blocks) return null;
   const user = useAtomValue(userAtom);
@@ -32,21 +44,33 @@ const RenderContent = ({
           {title}
         </p>
         <div className="my-10 flex items-center gap-3">
-          <Avatar label={user.name} className="p-7 text-4xl" />
+          <Avatar label={author} className="p-7 text-4xl" />
           <div className="flex flex-col">
             <div className="flex gap-2 items-center">
-              <p className="text-lg">{user.name}</p>
-              <span>.</span>
-              <p>Follow</p>
+              <p className="text-lg font-medium">{author}</p>
+              {user.id == authorId ? (
+                <p className="px-2 bg-green-500 rounded-full font-semibold font-[HostGrotesk] text-slate-900">You</p>
+              ) : (
+                <div className="flex gap-2">
+                  <span>.</span>
+                  <button className="underline">Follow</button>
+                </div>
+              )}
             </div>
             <div>{formatTime(time)}</div>
           </div>
         </div>
         <div className="mb-5 flex flex-row justify-between border-t border-b py-4">
           <div className="flex flex-row justify-center items-center gap-10">
-            <button><CircleArrowUp /></button>
-            <button><CircleArrowDown /></button>
-            <button><MessageCircleMore /></button>
+            <button>
+              <CircleArrowUp />
+            </button>
+            <button>
+              <CircleArrowDown />
+            </button>
+            <button>
+              <MessageCircleMore />
+            </button>
           </div>
           <div className="flex flex-row justify-center items-center gap-10">
             <BookmarkPlus />

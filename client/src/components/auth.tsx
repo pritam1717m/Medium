@@ -98,7 +98,7 @@ export function Auth({
                   onClick={async () => {
                     toast.promise(
                       axios.post(
-                        `${import.meta.env.VITE_domain_uri}/user/signin`,
+                        `${import.meta.env.VITE_domain_uri}/auth/signin`,
                         signin
                       ),
                       {
@@ -172,7 +172,7 @@ export function Auth({
                   onClick={async () => {
                     toast.promise(
                       axios.post(
-                        `${import.meta.env.VITE_domain_uri}/user/signup`,
+                        `${import.meta.env.VITE_domain_uri}/auth/signup`,
                         signup
                       ),
                       {

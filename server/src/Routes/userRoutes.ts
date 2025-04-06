@@ -1,119 +1,21 @@
-import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { signUpBody, signInBody } from "@rafael1717/common";
-import { sign, verify } from "hono/jwt";
-import bcrypt from "bcryptjs";
+import { Hono } from "hono";
+import { verify } from "hono/jwt";
 
 const userRoutes = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
-    CLOUDINARY_ClOUD_NAME: string;
-    CLOUDINARY_API_KEY: string;
-    CLOUDINARY_SECRET: string;
+  };
+  Variables: {
+    userId: string;
   };
 }>();
 
-userRoutes.post("/signup", async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  const { success } = signUpBody.safeParse(await c.req.json());
-
-  if (!success) {
-    c.status(400);
-    return c.json({ error: "Your input is too low" });
-  }
-  const body = await c.req.json();
-
+userRoutes.use("/*", async (c, next) => {
   try {
-    const existingUser = await prisma.user.findFirst({
-      where: {
-        email: body.email,
-      },
-    });
-
-    if (existingUser) {
-      c.status(409);
-      return c.json({ error: "User already exist" });
-    }
-  } catch (err) {
-    return c.json({ error: "Somthing went wrong" });
-  }
-
-  try {
-    const hashedPassword = await bcrypt.hash(body.password, 10);
-
-    const user = await prisma.user.create({
-      data: {
-        name: body.name,
-        email: body.email,
-        password: hashedPassword,
-      },
-    });
-
-    const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-
-    return c.json({ user, token });
-  } catch (err) {
-    return c.json({ error: "Somthing went wrong" });
-  }
-});
-
-userRoutes.post("/signin", async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  const { success } = signInBody.safeParse(await c.req.json());
-
-  if (!success) {
-    c.status(400);
-    return c.json({ error: "Your input is too low" });
-  }
-  const body = await c.req.json();
-
-  try {
-    const user = await prisma.user.findFirst({
-      where: {
-        email: body.email,
-      },
-    });
-
-    if (!user) {
-      c.status(400);
-      return c.json({ error: "User is not registered" });
-    }
-
-    try {
-      const isMatched = await bcrypt.compare(body.password, user.password);
-      if (!isMatched) {
-        c.status(401);
-        return c.json({ error: "Please enter correct password" });
-      }
-
-      const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-      return c.json({ user, token });
-    } catch (err) {
-      c.status(403);
-      return c.json({ error: "Something went wrong", err });
-    }
-  } catch (err) {
-    return c.json({ error: "Somthing went wrong" });
-  }
-});
-
-userRoutes.put("/update", async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  const {name, about, links} = await c.req.json();
-
-  try {
-    const header = c.req.header("Authorization") || "";
+    const header = c.req.header("authorization") || "";
     if (!header.startsWith("Bearer ")) {
       return c.json({ error: "Missing or invalid authorization header" }, 401);
     }
@@ -128,24 +30,104 @@ userRoutes.put("/update", async (c) => {
       return c.json({ error: "Unauthorized" }, 403);
     }
 
+    c.set("userId", user.id as string);
+    await next();
+  } catch (err) {
+    return c.json({ error: "Invalid or expired token" }, 401);
+  }
+});
+
+userRoutes.put("/update", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  const { name, about, links } = await c.req.json();
+
+  try {
     const updatedUser = await prisma.user.update({
-      where : {
-        id : user?.id as string
+      where: {
+        id: c.get("userId"),
       },
-      data : {
-        name : name,
-        about : about,
-        links : links
+      data: {
+        name: name,
+        about: about,
+        links: links,
       },
-      omit : {
-        password : true
-      }
-    })
+      omit: {
+        password: true,
+      },
+    });
 
-    return c.json({updatedUser})
-
+    return c.json({ updatedUser });
   } catch (e) {
-    return c.json({error : "Something went wrong"}, 403)
+    return c.json({ error: "Something went wrong" }, 403);
+  }
+});
+
+userRoutes.post("/follow", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const { id } = await c.req.json();
+    if (id != c.get("userId")) {
+      await prisma.follower.create({
+        data: {
+          followerId: c.get("userId"),
+          followingId: id,
+        },
+      });
+    }
+  } catch (e) {
+    return c.json({ error: "Something went wrong, try again" }, 403);
+  }
+});
+
+userRoutes.post("/unfollow", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const { id } = await c.req.json();
+    if (id != c.get("userId")) {
+      await prisma.follower.delete({
+        where: {
+          followerId_followingId: {
+            followerId: c.get("userId"),
+            followingId: id,
+          },
+        },
+      });
+    }
+  } catch (e) {
+    return c.json({ error: "Something went wrong, try again" }, 403);
+  }
+});
+
+userRoutes.post("/get-follower", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    await prisma.follower.findMany({
+      where: {
+        followerId: c.get("userId"),
+      },
+      include: {
+        following: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  } catch (e) {
+    return c.json({ error: "Something went wrong, try again" }, 403);
   }
 });
 

@@ -6,21 +6,32 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
-type Block = {
+interface Block {
   id: string;
   type: string;
   data: any;
-};
+}
 
 type Content = {
   blocks: Block[];
 };
 
+interface Details {
+  title: string;
+  time: string;
+  authorId: string;
+  author: string;
+}
+
 function Blog() {
   const controller = new AbortController();
   const [blog, setBlog] = useState<Content>();
-  const [title, setTitle] = useState("");
-  const [time, setTime] = useState("");
+  const [details, setDetails] = useState<Details>({
+    title: "",
+    time: "",
+    authorId: "",
+    author: "",
+  });
   const { id } = useParams();
   useEffect(() => {
     (async () => {
@@ -34,9 +45,14 @@ function Blog() {
             },
           }
         );
-        setTitle(res.data.post && res.data.post.title);
+        console.log(res.data.post)
         setBlog(res.data.post && res.data.post.content);
-        setTime(res.data.post && res.data.post.updatedAt);
+        setDetails({
+          title: res.data.post && res.data.post.title,
+          time: res.data.post && res.data.post.updatedAt,
+          authorId: res.data.post && res.data.post.authorId,
+          author: res.data.post && res.data.post.author.name,
+        });
       } catch (err) {
         toast.error("Falid to fetch blog, try again.");
       }
@@ -56,11 +72,13 @@ function Blog() {
         {blog ? (
           <RenderContent
             content={blog ?? { blocks: [] }}
-            title={title}
-            time={time}
+            title={details.title}
+            time={details.time}
+            authorId={details.authorId}
+            author={details.author}
           />
         ) : (
-          <div className="flex flex-col justify-center">
+          <div className="max-w-[350px] lg:max-w-[700px] flex flex-col justify-center">
             <Skeleton className="h-[42px] w-[700px]"></Skeleton>
             <div className="my-10 flex items-center gap-3">
               <Skeleton className="p-7 rounded-full" />
