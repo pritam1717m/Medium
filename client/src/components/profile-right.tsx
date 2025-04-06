@@ -20,7 +20,6 @@ type Followings = Array<Following>
 
 export default function ProfileRight() {
   const user = useAtomValue(userAtom);
-  console.log(user)
   return (
     <div className="w-full py-20 px-10 border-l flex flex-col">
       <div className="space-y-3">
