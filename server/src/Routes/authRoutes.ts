@@ -43,7 +43,7 @@ authRoutes.post("/signup", async (c) => {
   try {
     const hashedPassword = await bcrypt.hash(body.password, 10);
 
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name: body.name,
         email: body.email,
@@ -51,9 +51,7 @@ authRoutes.post("/signup", async (c) => {
       },
     });
 
-    const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-
-    return c.json({ user, token });
+    return c.json({message: "Signing up successfully"});
   } catch (err) {
     return c.json({ error: "Somthing went wrong" });
   }
@@ -76,7 +74,7 @@ authRoutes.post("/signin", async (c) => {
     const user = await prisma.user.findFirst({
       where: {
         email: body.email,
-      },
+      }
     });
 
     if (!user) {
@@ -91,8 +89,38 @@ authRoutes.post("/signin", async (c) => {
         return c.json({ error: "Please enter correct password" });
       }
 
+      const currentUser = await prisma.user.findFirst({
+        where : {
+          email : user.email
+        },
+        include: {
+          followers: {
+            select: {
+              following: {
+                select: {
+                  id: true,
+                  name: true,
+                }
+              }
+            }
+          },
+          following: {
+            select: {
+              follower: {
+                select: {
+                  id: true,
+                  name: true,
+                }
+              }
+            }
+          }
+        },
+        omit: {
+          password: true
+        }
+      })
       const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-      return c.json({ user, token });
+      return c.json({ currentUser, token });
     } catch (err) {
       c.status(403);
       return c.json({ error: "Something went wrong", err });

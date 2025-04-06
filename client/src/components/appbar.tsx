@@ -69,7 +69,7 @@ function AppBar() {
       </div>
     </div>
   ) : (
-    <div className="top-0 h-[60px] w-full py-2.5 md:px-10 flex justify-between items-center border-b border-slate-200 dark:border-slate-500 bg-gray-50 dark:bg-slate-950 text-black dark:text-white transition-all duration-400">
+    <div className="top-0 h-[60px] w-full py-2.5 md:px-10 flex justify-between items-center border-b border-slate-200 dark:border-slate-500 text-black dark:text-white transition-all duration-400">
       <div className="flex flex-row md:space-x-5 transition-all duration-400">
         <div className="w-40 bg-[url(/Wordmark.svg)] bg-no-repeat bg-[auto_25px] bg-center dark:bg-[url(/Wordmark-White.svg)]" onClick={() => navigate('/blogs')}></div>
         <div className="flex items-center rounded-full md:bg-gray-100 md:dark:bg-gray-800">

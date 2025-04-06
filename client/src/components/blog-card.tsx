@@ -18,7 +18,7 @@ function BlogCard({ blog }: { blog: Blog }) {
     <div className="py-8 flex flex-col space-y-2 border-b border-slate-200 dark:border-slate-700 font-[HostGrotesk]">
       {blog.author && (
         <div className="flex flex-row items-center space-x-2 dark:text-slate-200">
-          <Avatar label={blog.author} />
+          <Avatar label={blog.author} className="w-7 h-7"/>
           <p>by {blog.author}</p>
         </div>
       )}

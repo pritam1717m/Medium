@@ -105,8 +105,7 @@ export function Auth({
                         loading: "Signing in...",
                         success: (response) => {
                           localStorage.setItem("token", response.data.token);
-                          console.log(response.data)
-                          setUser(response.data.user);
+                          setUser(response.data.currentUser);
                           navigate("/blogs");
 
                           return "Signed in successfully!";
@@ -177,11 +176,9 @@ export function Auth({
                       ),
                       {
                         loading: "Signing up...",
-                        success: (response) => {
-                          localStorage.setItem("token", response.data.token);
-                          setUser(response.data.user)
-                          navigate("/blogs");
-                          return "Account created successfully!";
+                        success: () => {
+                          navigate("/");
+                          return "Account created successfully! Please Login";
                         },
                         error: (response) => {
                           return response.data

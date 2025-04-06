@@ -1,5 +1,5 @@
 import { userAtom } from "@/store/atom/user";
-import { useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import Avatar from "./avatar";
 import { formatTime } from "@/lib/getTime";
 import {
@@ -11,6 +11,9 @@ import {
   MessageCircleMore,
   Share,
 } from "lucide-react";
+import axios from "axios";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
 type Block = {
   id: string;
@@ -36,24 +39,91 @@ const RenderContent = ({
   author: string;
 }) => {
   if (!content || !content.blocks) return null;
-  const user = useAtomValue(userAtom);
+  const [user, setUser] = useAtom(userAtom);
+  const [followed, setFollowed] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const res = await axios.post(
+        `${import.meta.env.VITE_domain_uri}/user/check-followed`,
+        { id: authorId },
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
+      if(res.data.followed) {
+        setFollowed(true)
+      } else {
+        setFollowed(false)
+      }
+    })();
+  }, []);
+
   return (
-    <div className="max-w-[350px] lg:max-w-[700px]">
-      <div className="flex flex-col justify-center">
+    <div className="w-[350px] lg:w-[700px]">
+      <div className="w- flex flex-col justify-center">
         <p className="text-[42px] font-[HostGrotesk] font-extrabold dark:text-slate-200 leading-snug text-justify">
           {title}
         </p>
         <div className="my-10 flex items-center gap-3">
-          <Avatar label={author} className="p-7 text-4xl" />
+          <Avatar label={author} className="w-12 h-12 text-4xl" />
           <div className="flex flex-col">
             <div className="flex gap-2 items-center">
               <p className="text-lg font-medium">{author}</p>
               {user.id == authorId ? (
-                <p className="px-2 bg-green-500 rounded-full font-semibold font-[HostGrotesk] text-slate-900">You</p>
+                <p className="px-2 bg-green-500 rounded-full font-semibold font-[HostGrotesk] text-slate-900">
+                  You
+                </p>
               ) : (
                 <div className="flex gap-2">
                   <span>.</span>
-                  <button className="underline">Follow</button>
+                  {followed ? <p>Followed <span>&#10003;</span></p> :<button
+                    className="underline"
+                    onClick={async () => {
+                      toast.promise(
+                        axios.post(
+                          `${import.meta.env.VITE_domain_uri}/user/follow`,
+                          { id: authorId },
+                          {
+                            headers: {
+                              "Content-Type": "application/json;charset=UTF-8",
+                              Authorization:
+                                "Bearer " + localStorage.getItem("token"),
+                            },
+                          }
+                        ),
+                        {
+                          success: async () => {
+                            const res = await axios.get(
+                              `${import.meta.env.VITE_domain_uri}/user/me`,
+                              {
+                                headers: {
+                                  "Content-Type":
+                                    "application/json;charset=UTF-8",
+                                  Authorization:
+                                    "Bearer " + localStorage.getItem("token"),
+                                },
+                              }
+                            );
+                            console.log(res.data.user);
+                            setUser(res.data.user);
+                            setFollowed(true)
+                            return `You followed ${author}`;
+                          },
+                          error: (response) => {
+                            return response.data
+                              ? "Error occured while following! Try again"
+                              : "Internal server error!";
+                          },
+                        }
+                      );
+                    }}
+                  >
+                    Follow
+                  </button>}
                 </div>
               )}
             </div>

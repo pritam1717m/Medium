@@ -45,7 +45,6 @@ function Blog() {
             },
           }
         );
-        console.log(res.data.post)
         setBlog(res.data.post && res.data.post.content);
         setDetails({
           title: res.data.post && res.data.post.title,

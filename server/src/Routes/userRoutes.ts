@@ -37,6 +37,48 @@ userRoutes.use("/*", async (c, next) => {
   }
 });
 
+userRoutes.get("/me", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        id: c.get("userId"),
+      },
+      include: {
+        followers: {
+          select: {
+            following: {
+              select: {
+                id: true,
+                name: true,
+              }
+            }
+          }
+        },
+        following: {
+          select: {
+            follower: {
+              select: {
+                id: true,
+                name: true,
+              }
+            }
+          }
+        }
+      },
+      omit: {
+        password: true,
+      },
+    });
+    return c.json({user});
+  } catch (e) {
+    return c.json({ error: "Error while fetching user" }, 403);
+  }
+});
+
 userRoutes.put("/update", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
@@ -72,16 +114,30 @@ userRoutes.post("/follow", async (c) => {
 
   try {
     const { id } = await c.req.json();
-    if (id != c.get("userId")) {
-      await prisma.follower.create({
-        data: {
-          followerId: c.get("userId"),
-          followingId: id,
+    const currentUserId = c.get("userId");
+
+    if (id !== currentUserId) {
+      const existingFollow = await prisma.follower.findUnique({
+        where: {
+          followerId_followingId: {
+            followerId: id,
+            followingId: currentUserId,
+          },
         },
       });
+
+      if (!existingFollow) {
+        await prisma.follower.create({
+          data: {
+            followerId: id,
+            followingId: currentUserId,
+          },
+        });
+      }
     }
+    return c.json({ message: "Follower added" });
   } catch (e) {
-    return c.json({ error: "Something went wrong, try again" }, 403);
+    return c.json({ error: "Something went wrong, try again" + e }, 403);
   }
 });
 
@@ -96,11 +152,38 @@ userRoutes.post("/unfollow", async (c) => {
       await prisma.follower.delete({
         where: {
           followerId_followingId: {
-            followerId: c.get("userId"),
-            followingId: id,
+            followerId: id,
+            followingId:c.get("userId"),
           },
         },
       });
+    }
+  } catch (e) {
+    return c.json({ error: "Something went wrong, try again" }, 403);
+  }
+});
+
+userRoutes.post("/check-followed", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const { id } = await c.req.json();
+    if (id != c.get("userId")) {
+      const user = await prisma.follower.findUnique({
+        where: {
+          followerId_followingId: {
+            followerId: id,
+            followingId:c.get("userId"),
+          },
+        },
+      });
+      if(user) {
+        return c.json({followed : true})
+      } else {
+        return c.json({followed : false})
+      }
     }
   } catch (e) {
     return c.json({ error: "Something went wrong, try again" }, 403);
@@ -115,10 +198,10 @@ userRoutes.post("/get-follower", async (c) => {
   try {
     await prisma.follower.findMany({
       where: {
-        followerId: c.get("userId"),
+        followingId: c.get("userId"),
       },
       include: {
-        following: {
+        follower: {
           select: {
             id: true,
             name: true,

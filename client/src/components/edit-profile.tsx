@@ -96,7 +96,7 @@ export default function EditProfile() {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild className="py-3">
         <button className="text-green-600 mt-2 hover:underline">
           Edit Profile
         </button>
@@ -170,7 +170,7 @@ export default function EditProfile() {
                 <div>
                   {linkInput.map((item, i) => {
                     return (
-                      <div className="mb-2 flex items-center justify-center text-center">
+                      <div className="mb-2 flex items-center justify-center text-center" key={i}>
                         <Input
                           id={String(i)}
                           key={item.id}
