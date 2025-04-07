@@ -11,14 +11,6 @@ interface Link {
 
 type Links = Array<Link>
 
-interface Following {
-  follower: {
-    id: string;
-    name: string;
-  };
-}
-type Followings = Array<Following>
-
 export default function ProfileRight() {
   const user = useAtomValue(userAtom);
   return (
