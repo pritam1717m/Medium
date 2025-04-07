@@ -8,6 +8,8 @@ import ProfileBlog from "./profile-blog";
 import { Skeleton } from "./ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import ProfileAbout from "./profile-about";
+import Followings from "./followings";
+import Followers from "./Followers";
 
 export default function ProfileLeft() {
   const [blogs, setBlogs] = useAtom(blogAtom);
@@ -61,7 +63,7 @@ export default function ProfileLeft() {
               Home
             </TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
-            <TabsTrigger value="follwers">Followers</TabsTrigger>
+            <TabsTrigger value="followers">Followers</TabsTrigger>
             <TabsTrigger value="followings">Followings</TabsTrigger>
           </TabsList>
           <TabsContent value="home" className="mx-5">
@@ -100,6 +102,12 @@ export default function ProfileLeft() {
           </TabsContent>
           <TabsContent value="about" className="mx-5">
             <ProfileAbout />
+          </TabsContent>
+          <TabsContent value="followers" className="mx-5">
+            <Followers />
+          </TabsContent>
+          <TabsContent value="followings" className="mx-5">
+            <Followings />
           </TabsContent>
         </Tabs>
       </div>

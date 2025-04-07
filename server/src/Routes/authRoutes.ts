@@ -100,6 +100,7 @@ authRoutes.post("/signin", async (c) => {
                 select: {
                   id: true,
                   name: true,
+                  about: true,
                 }
               }
             }
@@ -110,6 +111,7 @@ authRoutes.post("/signin", async (c) => {
                 select: {
                   id: true,
                   name: true,
+                  about: true,
                 }
               }
             }

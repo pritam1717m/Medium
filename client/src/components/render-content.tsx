@@ -41,8 +41,10 @@ const RenderContent = ({
   if (!content || !content.blocks) return null;
   const [user, setUser] = useAtom(userAtom);
   const [followed, setFollowed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     (async () => {
       const res = await axios.post(
         `${import.meta.env.VITE_domain_uri}/user/check-followed`,
@@ -54,10 +56,12 @@ const RenderContent = ({
           },
         }
       );
-      if(res.data.followed) {
-        setFollowed(true)
+      if (res.data.followed) {
+        setFollowed(true);
+        setLoading(false);
       } else {
-        setFollowed(false)
+        setFollowed(false);
+        setLoading(false);
       }
     })();
   }, []);
@@ -80,50 +84,59 @@ const RenderContent = ({
               ) : (
                 <div className="flex gap-2">
                   <span>.</span>
-                  {followed ? <p>Followed <span>&#10003;</span></p> :<button
-                    className="underline"
-                    onClick={async () => {
-                      toast.promise(
-                        axios.post(
-                          `${import.meta.env.VITE_domain_uri}/user/follow`,
-                          { id: authorId },
+                  {loading ? (
+                    ""
+                  ) : followed ? (
+                    <p>
+                      Followed <span>&#10003;</span>
+                    </p>
+                  ) : (
+                    <button
+                      className="underline"
+                      onClick={async () => {
+                        toast.promise(
+                          axios.post(
+                            `${import.meta.env.VITE_domain_uri}/user/follow`,
+                            { id: authorId },
+                            {
+                              headers: {
+                                "Content-Type":
+                                  "application/json;charset=UTF-8",
+                                Authorization:
+                                  "Bearer " + localStorage.getItem("token"),
+                              },
+                            }
+                          ),
                           {
-                            headers: {
-                              "Content-Type": "application/json;charset=UTF-8",
-                              Authorization:
-                                "Bearer " + localStorage.getItem("token"),
+                            success: async () => {
+                              const res = await axios.get(
+                                `${import.meta.env.VITE_domain_uri}/user/me`,
+                                {
+                                  headers: {
+                                    "Content-Type":
+                                      "application/json;charset=UTF-8",
+                                    Authorization:
+                                      "Bearer " + localStorage.getItem("token"),
+                                  },
+                                }
+                              );
+                              console.log(res.data.user);
+                              setUser(res.data.user);
+                              setFollowed(true);
+                              return `You followed ${author}`;
+                            },
+                            error: (response) => {
+                              return response.data
+                                ? "Error occured while following! Try again"
+                                : "Internal server error!";
                             },
                           }
-                        ),
-                        {
-                          success: async () => {
-                            const res = await axios.get(
-                              `${import.meta.env.VITE_domain_uri}/user/me`,
-                              {
-                                headers: {
-                                  "Content-Type":
-                                    "application/json;charset=UTF-8",
-                                  Authorization:
-                                    "Bearer " + localStorage.getItem("token"),
-                                },
-                              }
-                            );
-                            console.log(res.data.user);
-                            setUser(res.data.user);
-                            setFollowed(true)
-                            return `You followed ${author}`;
-                          },
-                          error: (response) => {
-                            return response.data
-                              ? "Error occured while following! Try again"
-                              : "Internal server error!";
-                          },
-                        }
-                      );
-                    }}
-                  >
-                    Follow
-                  </button>}
+                        );
+                      }}
+                    >
+                      Follow
+                    </button>
+                  )}
                 </div>
               )}
             </div>

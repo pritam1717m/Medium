@@ -1,11 +1,9 @@
 {
   "name": "client",
+  "author": {"name" : "Pritam Mandal"},
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "exports": {
-    "@editorjs/simple-image": "./node_modules/@editorjs/simple-image/dist/simple-image.mjs"
-  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

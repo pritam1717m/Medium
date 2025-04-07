@@ -54,6 +54,7 @@ userRoutes.get("/me", async (c) => {
               select: {
                 id: true,
                 name: true,
+                about: true 
               }
             }
           }
@@ -64,6 +65,7 @@ userRoutes.get("/me", async (c) => {
               select: {
                 id: true,
                 name: true,
+                about: true
               }
             }
           }
