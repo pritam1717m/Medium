@@ -9,7 +9,7 @@ import { Skeleton } from "./ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import ProfileAbout from "./profile-about";
 import Followings from "./followings";
-import Followers from "./Followers";
+import Followers from "./followers";
 
 export default function ProfileLeft() {
   const [blogs, setBlogs] = useAtom(blogAtom);
