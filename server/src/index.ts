@@ -1,11 +1,21 @@
-import { Hono } from 'hono'
-import mainRoute from './Routes'
-import { cors } from 'hono/cors'
-
-const app = new Hono()
-
-app.use('/api/*', cors())
-app.route('/api/v1', mainRoute)
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import mainRoute from "./Routes";
 
 
-export default app
+const app = new Hono();
+
+app.use(
+  "/api/*",
+  cors({
+    origin: ["https://medium-by-pritam.vercel.app"],
+    allowMethods: ["POST", "GET", "DELETE", "PUT"],
+    exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
+    maxAge: 600,
+    credentials: true,
+  })
+);
+
+app.route("/api/v1", mainRoute);
+
+export default app;

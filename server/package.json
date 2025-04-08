@@ -10,11 +10,12 @@
     "@prisma/extension-accelerate": "^1.2.1",
     "@rafael1717/common": "^1.1.2",
     "@types/bcryptjs": "^2.4.6",
+    "@upstash/ratelimit": "^2.0.5",
+    "@upstash/redis": "^1.34.7",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
-    "hono": "^4.6.20",
-    "redis": "^4.7.0"
+    "hono": "^4.6.20"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250109.0",
