@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { Hono } from "hono";
+import { Context, Hono } from "hono";
 import { verify } from "hono/jwt";
+import { UserRateLimiter } from "../lib/rateLimiter";
 
 const userRoutes = new Hono<{
   Bindings: {
@@ -12,6 +13,17 @@ const userRoutes = new Hono<{
     userId: string;
   };
 }>();
+
+userRoutes.use(async (c, next) => {
+  const rateLimit = UserRateLimiter.getInstance(c as Context);
+  const ip = c.req.raw.headers.get("CF-Connecting-IP");
+  const { success } = await rateLimit.limit(ip ?? "anonymous");
+  if(success) {
+    await next();
+  } else {
+    return c.json({message : "Too many requests"}, 429)
+  }
+});
 
 userRoutes.use("/*", async (c, next) => {
   try {

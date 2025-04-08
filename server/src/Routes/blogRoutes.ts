@@ -1,68 +1,29 @@
-import { Context, Env, Hono } from "hono";
+import { Context, Hono } from "hono";
 import { verify } from "hono/jwt";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { createBlogInput, updateBlogInput } from "@rafael1717/common";
-import { Ratelimit } from "@upstash/ratelimit";
-import { BlankInput } from "hono/types";
-import { env } from "hono/adapter";
-import { Redis } from "@upstash/redis/cloudflare";
+import { BlogRateLimiter } from "../lib/rateLimiter";
 
 const blogRoutes = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
-    UPSTASH_REDIS_REST_URL: string;
-    UPSTASH_REDIS_REST_TOKEN: string;
   };
   Variables: {
     userId: string;
-    rateLimit: Ratelimit;
   };
 }>();
 
-const cache = new Map();
-
-class RedisRateLimiter {
-  static instance: Ratelimit;
-
-  static getInstance(c: Context<Env, "/api/v1", BlankInput>) {
-    if (!this.instance) {
-      const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = env<{
-        UPSTASH_REDIS_REST_URL: string;
-        UPSTASH_REDIS_REST_TOKEN: string;
-      }>(
-        c as Context<{
-          Bindings: {
-            UPSTASH_REDIS_REST_URL: string;
-            UPSTASH_REDIS_REST_TOKEN: string;
-          };
-        }>
-      );
-
-      const redisClient = new Redis({
-        url: UPSTASH_REDIS_REST_URL,
-        token: UPSTASH_REDIS_REST_TOKEN,
-      });
-
-      const rateLimit = new Ratelimit({
-        redis: redisClient,
-        limiter: Ratelimit.slidingWindow(15, "60 s"),
-        ephemeralCache: cache,
-      });
-
-      this.instance = rateLimit;
-      return this.instance;
-    } else {
-      return this.instance;
-    }
-  }
-}
-
 blogRoutes.use(async (c, next) => {
-  const rateLimit = RedisRateLimiter.getInstance(c as Context);
-  c.set("rateLimit", rateLimit as Ratelimit);
-  await next();
+  const rateLimit = BlogRateLimiter.getInstance(c as Context);
+  const ip = c.req.raw.headers.get("CF-Connecting-IP");
+  const { success } = await rateLimit.limit(ip ?? "anonymous");
+  if(success) {
+    await next();
+  } else {
+    return c.json({message : "Too many requests"}, 429)
+  }
 });
 
 blogRoutes.use("/*", async (c, next) => {
@@ -220,37 +181,28 @@ blogRoutes.get("/all", async (c) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
-  const rateLimit = c.get("rateLimit");
-  const ip = c.req.raw.headers.get("CF-Connecting-IP");
-
-  const { success } = await rateLimit.limit(ip ?? "anonymous");
-
-  if (success) {
-    try {
-      const post = await prisma.post.findMany({
-        where: {
-          published: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        include: {
-          author: {
-            select: {
-              name: true,
-            },
+  try {
+    const post = await prisma.post.findMany({
+      where: {
+        published: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
           },
         },
-      });
+      },
+    });
 
-      return c.json({ post });
-    } catch (err) {
-      c.json({
-        error: "Something went wrong",
-      });
-    }
-  } else {
-    return c.json({message : "Too many requests"}, 429)
+    return c.json({ post });
+  } catch (err) {
+    c.json({
+      error: "Something went wrong",
+    });
   }
 });
 

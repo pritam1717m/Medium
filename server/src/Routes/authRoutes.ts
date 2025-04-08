@@ -1,9 +1,10 @@
-import { Hono } from "hono";
+import { Context, Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { signUpBody, signInBody } from "@rafael1717/common";
 import { sign, verify } from "hono/jwt";
 import bcrypt from "bcryptjs";
+import { AuthRateLimiter } from "../lib/rateLimiter";
 
 const authRoutes = new Hono<{
   Bindings: {
@@ -11,6 +12,17 @@ const authRoutes = new Hono<{
     JWT_SECRET: string;
   };
 }>();
+
+authRoutes.use(async (c, next) => {
+  const rateLimit = AuthRateLimiter.getInstance(c as Context);
+  const ip = c.req.raw.headers.get("CF-Connecting-IP");
+  const { success } = await rateLimit.limit(ip ?? "anonymous");
+  if(success) {
+    await next();
+  } else {
+    return c.json({message : "Too many requests"}, 429)
+  }
+});
 
 authRoutes.post("/signup", async (c) => {
   const prisma = new PrismaClient({
