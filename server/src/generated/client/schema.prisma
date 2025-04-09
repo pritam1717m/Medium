@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String?
+  password  String
+  about     String?
+  image     String?
+  links     Json?
+  posts     Post[]
+  votes     Vote[]
+  views     View[]
+  followers Follower[] @relation("UserFollowers")
+  following Follower[] @relation("UserFollowing")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Post {
+  id          String   @id @default(uuid())
+  title       String
+  content     Json
+  published   Boolean  @default(false)
+  publishedAt DateTime @default(now())
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+  votes       Vote[]
+  views       View[]
+  comment     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Vote {
+  id       String   @id @default(uuid())
+  userId   String
+  postId   String
+  voteType VoteType
+  User     User     @relation(fields: [userId], references: [id])
+  Post     Post     @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId])
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+model View {
+  id     String @id @default(uuid())
+  userId String
+  postId String
+  count  BigInt @default(0)
+  User   User   @relation(fields: [userId], references: [id])
+  Post   Post   @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId])
+}
+
+model Follower {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  follower    User     @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([followerId, followingId])
+}

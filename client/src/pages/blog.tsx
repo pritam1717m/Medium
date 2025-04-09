@@ -17,6 +17,7 @@ type Content = {
 };
 
 interface Details {
+  postId: string;
   title: string;
   time: string;
   authorId: string;
@@ -27,6 +28,7 @@ function Blog() {
   const controller = new AbortController();
   const [blog, setBlog] = useState<Content>();
   const [details, setDetails] = useState<Details>({
+    postId: "",
     title: "",
     time: "",
     authorId: "",
@@ -45,12 +47,15 @@ function Blog() {
             },
           }
         );
+        console.log(res.data.post)
         setBlog(res.data.post && res.data.post.content);
         setDetails({
+          postId: id as string,
           title: res.data.post && res.data.post.title,
           time: res.data.post && res.data.post.updatedAt,
           authorId: res.data.post && res.data.post.authorId,
           author: res.data.post && res.data.post.author.name,
+          
         });
       } catch (err) {
         toast.error("Falid to fetch blog, try again.");
@@ -70,6 +75,7 @@ function Blog() {
       <div className="my-20 w-full flex justify-center">
         {blog ? (
           <RenderContent
+            postId={id as string}
             content={blog ?? { blocks: [] }}
             title={details.title}
             time={details.time}

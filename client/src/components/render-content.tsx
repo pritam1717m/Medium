@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { blogAtom } from "@/store/atom/blogs";
 
 type Block = {
   id: string;
@@ -26,12 +27,14 @@ type Content = {
 };
 
 const RenderContent = ({
+  postId,
   content,
   title,
   time,
   authorId,
   author,
 }: {
+  postId: string;
   content: Content;
   title: string;
   time: string;
@@ -42,6 +45,10 @@ const RenderContent = ({
   const [user, setUser] = useAtom(userAtom);
   const [followed, setFollowed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [vote, setVote] = useState({
+    upvote: 0,
+    downvote: 0,
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -120,7 +127,6 @@ const RenderContent = ({
                                   },
                                 }
                               );
-                              console.log(res.data.user);
                               setUser(res.data.user);
                               setFollowed(true);
                               return `You followed ${author}`;
@@ -145,11 +151,73 @@ const RenderContent = ({
         </div>
         <div className="mb-5 flex flex-row justify-between border-t border-b py-4">
           <div className="flex flex-row justify-center items-center gap-10">
-            <button>
+            <button
+              className="flex gap-2 text-lg items-center"
+              onClick={() => {
+                toast.promise(
+                  axios.post(
+                    `${import.meta.env.VITE_domain_uri}/blog/upvote`,
+                    {
+                      id: postId,
+                    },
+                    {
+                      headers: {
+                        "Content-Type": "application/json;charset=UTF-8",
+                        Authorization:
+                          "Bearer " + localStorage.getItem("token"),
+                      },
+                    }
+                  ),
+                  {
+                    success: () => {
+                      return "UpVoted";
+                    },
+                    error: (response) => {
+                      if (response.code == 429) {
+                        return "Too many requests, retry after 1 minute";
+                      }
+                      return "Falied to accept vote, try again";
+                    },
+                  }
+                );
+              }}
+            >
               <CircleArrowUp />
+              {vote.upvote}
             </button>
-            <button>
+            <button
+              className="flex gap-2 text-lg items-center"
+              onClick={() => {
+                toast.promise(
+                  axios.post(
+                    `${import.meta.env.VITE_domain_uri}/blog/downvote`,
+                    {
+                      id: postId,
+                    },
+                    {
+                      headers: {
+                        "Content-Type": "application/json;charset=UTF-8",
+                        Authorization:
+                          "Bearer " + localStorage.getItem("token"),
+                      },
+                    }
+                  ),
+                  {
+                    success: () => {
+                      return "DownVoted";
+                    },
+                    error: (response) => {
+                      if (response.code == 429) {
+                        return "Too many requests, retry after 1 minute";
+                      }
+                      return "Falied to accept vote, try again";
+                    },
+                  }
+                );
+              }}
+            >
               <CircleArrowDown />
+              {vote.downvote}
             </button>
             <button>
               <MessageCircleMore />

@@ -15,16 +15,16 @@ const blogRoutes = new Hono<{
   };
 }>();
 
-blogRoutes.use(async (c, next) => {
-  const rateLimit = BlogRateLimiter.getInstance(c as Context);
-  const ip = c.req.raw.headers.get("CF-Connecting-IP");
-  const { success } = await rateLimit.limit(ip ?? "anonymous");
-  if(success) {
-    await next();
-  } else {
-    return c.json({message : "Too many requests"}, 429)
-  }
-});
+// blogRoutes.use(async (c, next) => {
+//   const rateLimit = BlogRateLimiter.getInstance(c as Context);
+//   const ip = c.req.raw.headers.get("CF-Connecting-IP");
+//   const { success } = await rateLimit.limit(ip ?? "anonymous");
+//   if(success) {
+//     await next();
+//   } else {
+//     return c.json({message : "Too many requests"}, 429)
+//   }
+// });
 
 blogRoutes.use("/*", async (c, next) => {
   try {
@@ -272,6 +272,12 @@ blogRoutes.get("/:id", async (c) => {
             name: true,
           },
         },
+        votes: {
+          select: {
+            userId: true,
+            voteType: true,
+          },
+        },
       },
     });
 
@@ -304,6 +310,82 @@ blogRoutes.delete("/:id", async (c) => {
   }
 });
 
+blogRoutes.post("/upvote", async (c) => {
+  const { id } = await c.req.json();
+
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    await prisma.vote.upsert({
+      where: {
+        userId_postId: {
+          userId: c.get("userId"),
+          postId: id as string,
+        },
+      },
+      update: {
+        voteType: "UP",
+      },
+      create: {
+        userId: c.get("userId"),
+        postId: id,
+        voteType: "UP",
+      },
+    });
+
+    const upvote = await prisma.vote.count({
+      where: {
+        postId: id,
+        voteType: "UP",
+      },
+    });
+
+    return c.json(upvote);
+  } catch (e) {
+    return c.json({ error: "Error while upvoting" + e }, 400);
+  }
+});
+
+blogRoutes.post("/downvote", async (c) => {
+  const { id } = await c.req.json();
+
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    await prisma.vote.upsert({
+      where: {
+        userId_postId: {
+          userId: c.get("userId"),
+          postId: id as string,
+        },
+      },
+      update: {
+        voteType: "DOWN",
+      },
+      create: {
+        userId: c.get("userId"),
+        postId: id,
+        voteType: "DOWN",
+      },
+    });
+
+    const downvote = await prisma.vote.count({
+      where: {
+        postId: id,
+        voteType: "DOWN",
+      },
+    });
+
+    return c.json(downvote);
+  } catch (e) {
+    return c.json({ error: "Error while downvoting" }, 400);
+  }
+});
+
 blogRoutes.post("/views", async (c) => {
   const { id } = await c.req.json();
 
@@ -320,7 +402,10 @@ blogRoutes.post("/views", async (c) => {
     if (post) {
       await prisma.view.upsert({
         where: {
-          userId: c.get("userId"),
+          userId_postId: {
+            userId: c.get("userId"),
+            postId: id as string,
+          },
         },
         update: {
           count: {

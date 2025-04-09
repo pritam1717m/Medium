@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/client"
 }
 
 datasource db {
@@ -46,11 +47,13 @@ model Post {
 }
 
 model Vote {
-  userId      String      @unique
-  postId      String      @unique
+  id          String      @id @default(uuid())
+  userId      String      
+  postId      String      
   voteType    VoteType
   User        User        @relation(fields: [userId], references: [id])
   Post        Post        @relation(fields: [postId], references: [id])
+  @@unique([userId, postId])
 }
 
 enum VoteType {
@@ -59,11 +62,13 @@ enum VoteType {
 }
 
 model View {
-  userId      String      @unique
-  postId      String      @unique
+  id          String      @id @default(uuid())
+  userId      String      
+  postId      String      
   count       BigInt      @default(0)
   User        User        @relation(fields: [userId], references: [id])
   Post        Post        @relation(fields: [postId], references: [id])
+  @@unique([userId, postId])
 }
 
 model Follower {

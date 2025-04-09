@@ -6,7 +6,7 @@
     "env": "dotenv -e .dev.vars"
   },
   "dependencies": {
-    "@prisma/client": "^6.3.1",
+    "@prisma/client": "^6.6.0",
     "@prisma/extension-accelerate": "^1.2.1",
     "@rafael1717/common": "^1.1.2",
     "@types/bcryptjs": "^2.4.6",
@@ -15,12 +15,13 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
+    "esbuild": "^0.25.2",
     "hono": "^4.6.20"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250109.0",
     "@types/node": "^22.13.1",
-    "prisma": "^6.3.1",
+    "prisma": "^6.6.0",
     "wrangler": "^4.7.2"
   }
 }
