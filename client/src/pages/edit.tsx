@@ -13,9 +13,8 @@ function Edit() {
     }
     (async () => {
       try {
-        const res = await axios.post(
+        const res = await axios.get(
           `${import.meta.env.VITE_domain_uri}/user/me`,
-          {},
           {
             headers: {
               "Content-Type": "application/json;charset=UTF-8",
