@@ -40,7 +40,7 @@ blogRoutes.use("/*", async (c, next) => {
 
     const user = await verify(token, c.env.JWT_SECRET);
     if (!user) {
-      return c.json({ error: "Unauthorized" }, 403);
+      return c.json({ error: "Unauthorized" }, 401);
     }
 
     c.set("userId", user.id as string);
@@ -182,7 +182,7 @@ blogRoutes.get("/all", async (c) => {
   }).$extends(withAccelerate());
 
   try {
-    const post = await prisma.post.findMany({
+    const posts = await prisma.post.findMany({
       where: {
         published: true,
       },
@@ -195,10 +195,40 @@ blogRoutes.get("/all", async (c) => {
             name: true,
           },
         },
+        votes: {
+          select: {
+            userId: true,
+            voteType: true,
+          },
+        },
       },
     });
+    if (!posts) {
+      return c.json({ error: "Blog not found" }, 404);
+    }
 
-    return c.json({ post });
+    const formattedPosts = posts.map((post) => {
+      let upvotes = 0;
+      let downvotes = 0;
+
+      post.votes.forEach((vote) => {
+        if (vote.voteType === "UP") {
+          upvotes++;
+        } else if (vote.voteType === "DOWN") {
+          downvotes++;
+        }
+      });
+
+      const { votes, ...rest } = post;
+
+      return {
+        ...rest,
+        upvotes,
+        downvotes,
+      };
+    });
+
+    return c.json({ posts: formattedPosts });
   } catch (err) {
     c.json({
       error: "Something went wrong",
@@ -281,7 +311,30 @@ blogRoutes.get("/:id", async (c) => {
       },
     });
 
-    return c.json({ post });
+    if (!post) {
+      return c.json({ error: "Blog not found" }, 404);
+    }
+
+    let upvotes = 0;
+    let downvotes = 0;
+
+    post?.votes.forEach((vote) => {
+      if (vote.voteType === "UP") {
+        upvotes++;
+      } else if (vote.voteType === "DOWN") {
+        downvotes++;
+      }
+    });
+
+    const { votes, ...rest } = post;
+
+    return c.json({
+      post: {
+        ...rest,
+        upvotes,
+        downvotes,
+      },
+    });
   } catch (err) {
     c.json({
       error: "Something went wrong",

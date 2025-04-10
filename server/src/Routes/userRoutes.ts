@@ -39,7 +39,7 @@ userRoutes.use("/*", async (c, next) => {
 
     const user = await verify(token, c.env.JWT_SECRET);
     if (!user) {
-      return c.json({ error: "Unauthorized" }, 403);
+      return c.json({ error: "Unauthorized" }, 401);
     }
 
     c.set("userId", user.id as string);
@@ -66,10 +66,10 @@ userRoutes.get("/me", async (c) => {
               select: {
                 id: true,
                 name: true,
-                about: true 
-              }
-            }
-          }
+                about: true,
+              },
+            },
+          },
         },
         following: {
           select: {
@@ -77,17 +77,17 @@ userRoutes.get("/me", async (c) => {
               select: {
                 id: true,
                 name: true,
-                about: true
-              }
-            }
-          }
-        }
+                about: true,
+              },
+            },
+          },
+        },
       },
       omit: {
         password: true,
       },
     });
-    return c.json({user});
+    return c.json({ user });
   } catch (e) {
     return c.json({ error: "Error while fetching user" }, 403);
   }
@@ -167,7 +167,7 @@ userRoutes.post("/unfollow", async (c) => {
         where: {
           followerId_followingId: {
             followerId: id,
-            followingId:c.get("userId"),
+            followingId: c.get("userId"),
           },
         },
       });
@@ -184,45 +184,56 @@ userRoutes.post("/check-followed", async (c) => {
 
   try {
     const { id } = await c.req.json();
-    if (id != c.get("userId")) {
-      const user = await prisma.follower.findUnique({
-        where: {
-          followerId_followingId: {
-            followerId: id,
-            followingId:c.get("userId"),
-          },
-        },
-      });
-      if(user) {
-        return c.json({followed : true})
-      } else {
-        return c.json({followed : false})
-      }
+    const currentUserId = c.get("userId");
+
+    if (!id || !currentUserId) {
+      return c.json({ error: "Missing user ID(s)" }, 400);
     }
+
+    if (id === currentUserId) {
+      return c.json({ followed: false });
+    }
+
+    const user = await prisma.follower.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: id,
+          followingId: currentUserId,
+        },
+      },
+    });
+    return c.json({ followed: !!user });
   } catch (e) {
     return c.json({ error: "Something went wrong, try again" }, 403);
   }
 });
 
-userRoutes.post("/get-follower", async (c) => {
+userRoutes.post("/check-voted", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
   try {
-    await prisma.follower.findMany({
+    const { id } = await c.req.json();
+    const currentUserId = c.get("userId");
+
+    if (!id || !currentUserId) {
+      return c.json({ error: "Missing user ID(s)" }, 400);
+    }
+
+    const vote = await prisma.vote.findUnique({
       where: {
-        followingId: c.get("userId"),
-      },
-      include: {
-        follower: {
-          select: {
-            id: true,
-            name: true,
-          },
+        userId_postId: {
+          userId: c.get("userId"),
+          postId: id,
         },
       },
     });
+    if(!vote) {
+      return c.json({message: "Not voted yet"})
+    }
+    return c.json({ vote: vote?.voteType });
+
   } catch (e) {
     return c.json({ error: "Something went wrong, try again" }, 403);
   }

@@ -9,6 +9,8 @@ type Blog = {
   content: any;
   time: string;
   author?: string;
+  upvotes: number;
+  downvotes: number;
 };
 
 function BlogCard({ blog }: { blog: Blog }) {
@@ -50,7 +52,7 @@ function BlogCard({ blog }: { blog: Blog }) {
       </div>
       <div className="mt-2 flex flex-row space-x-2 text-center text-slate-500 font-medium">
         <p className="text-center">✨ {formatTime(blog.time)}</p>
-        <p className="text-center">👋🏼 5.4k</p>
+        <p className="text-center">👋🏼 {blog.downvotes + blog.upvotes}</p>
         <p className="text-center">👀 243</p>
       </div>
     </div>

@@ -22,6 +22,8 @@ interface Details {
   time: string;
   authorId: string;
   author: string;
+  upvotes: number;
+  downvotes: number;
 }
 
 function Blog() {
@@ -33,6 +35,8 @@ function Blog() {
     time: "",
     authorId: "",
     author: "",
+    upvotes: 0,
+    downvotes: 0,
   });
   const { id } = useParams();
   useEffect(() => {
@@ -47,7 +51,7 @@ function Blog() {
             },
           }
         );
-        console.log(res.data.post)
+
         setBlog(res.data.post && res.data.post.content);
         setDetails({
           postId: id as string,
@@ -55,7 +59,8 @@ function Blog() {
           time: res.data.post && res.data.post.updatedAt,
           authorId: res.data.post && res.data.post.authorId,
           author: res.data.post && res.data.post.author.name,
-          
+          upvotes: res.data.post && res.data.post.upvotes,
+          downvotes: res.data.post && res.data.post.downvotes,
         });
       } catch (err) {
         toast.error("Falid to fetch blog, try again.");
@@ -81,6 +86,8 @@ function Blog() {
             time={details.time}
             authorId={details.authorId}
             author={details.author}
+            upvotes={details.upvotes}
+            downvotes={details.downvotes}
           />
         ) : (
           <div className="max-w-[350px] lg:max-w-[700px] flex flex-col justify-center">

@@ -14,7 +14,6 @@ import {
 import axios from "axios";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { blogAtom } from "@/store/atom/blogs";
 
 type Block = {
   id: string;
@@ -33,6 +32,8 @@ const RenderContent = ({
   time,
   authorId,
   author,
+  upvotes,
+  downvotes,
 }: {
   postId: string;
   content: Content;
@@ -40,15 +41,18 @@ const RenderContent = ({
   time: string;
   authorId: string;
   author: string;
+  upvotes: number;
+  downvotes: number;
 }) => {
   if (!content || !content.blocks) return null;
   const [user, setUser] = useAtom(userAtom);
-  const [followed, setFollowed] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [followed, setFollowed] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [vote, setVote] = useState({
-    upvote: 0,
-    downvote: 0,
+    upvote: upvotes,
+    downvote: downvotes,
   });
+  const [voted, setVoted] = useState<string>("")
 
   useEffect(() => {
     setLoading(true);
@@ -63,6 +67,19 @@ const RenderContent = ({
           },
         }
       );
+      const voteType = await axios.post(
+        `${import.meta.env.VITE_domain_uri}/user/check-voted`,
+        { id: postId },
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
+      if(voteType.data.vote){
+        setVoted(voteType.data.vote)
+      }
       if (res.data.followed) {
         setFollowed(true);
         setLoading(false);
@@ -170,6 +187,13 @@ const RenderContent = ({
                   ),
                   {
                     success: () => {
+                      if(voted == "DOWN"){
+                        setVote(prev => ({
+                          upvote: prev.upvote + 1,
+                          downvote: prev.downvote - 1,
+                        }));
+                        setVoted("UP")
+                      }
                       return "UpVoted";
                     },
                     error: (response) => {
@@ -182,7 +206,7 @@ const RenderContent = ({
                 );
               }}
             >
-              <CircleArrowUp />
+              {voted == "UP" ? <CircleArrowUp className="text-green-500" /> : <CircleArrowUp />}
               {vote.upvote}
             </button>
             <button
@@ -204,6 +228,13 @@ const RenderContent = ({
                   ),
                   {
                     success: () => {
+                      if(voted == "UP"){
+                        setVote(prev => ({
+                          upvote: prev.upvote - 1,
+                          downvote: prev.downvote + 1,
+                        }));
+                        setVoted("DOWN")
+                      }
                       return "DownVoted";
                     },
                     error: (response) => {
@@ -216,7 +247,7 @@ const RenderContent = ({
                 );
               }}
             >
-              <CircleArrowDown />
+              {voted == "DOWN" ? <CircleArrowDown className="text-red-500" /> : <CircleArrowDown />}
               {vote.downvote}
             </button>
             <button>

@@ -22,14 +22,16 @@ function BlogsLeft() {
             },
           }
         );
-
-        if (Array.isArray(res.data.post)) {
-          const formattedBlogs = res.data.post.map((item: any) => ({
+        console.log(res.data.posts)
+        if (Array.isArray(res.data.posts)) {
+          const formattedBlogs = res.data.posts.map((item: any) => ({
             id: item.id, 
             title: item.title, 
             content: item.content, 
             time: item.updatedAt, 
-            author: item.author.name, 
+            author: item.author.name,
+            upvotes: item.upvotes, 
+            downvotes: item.downvotes, 
           }));
           
           setBlogs(formattedBlogs); 
