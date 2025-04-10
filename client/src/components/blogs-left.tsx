@@ -22,7 +22,6 @@ function BlogsLeft() {
             },
           }
         );
-        console.log(res.data.posts)
         if (Array.isArray(res.data.posts)) {
           const formattedBlogs = res.data.posts.map((item: any) => ({
             id: item.id, 
