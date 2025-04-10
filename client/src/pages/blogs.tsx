@@ -9,6 +9,9 @@ import { toast } from "sonner";
 function Blogs() {
   const navigate = useNavigate();
   useEffect(() => {
+    if(!localStorage.getItem("token")){
+      navigate("/")
+    }
     (async () => {
       try {
         const res = await axios.post(
@@ -30,6 +33,7 @@ function Blogs() {
       } catch (error: any) {
         toast.error("Something went wrong!");
         if (error.response?.status === 401) {
+          toast.error("Session expired, Login again...");
           localStorage.removeItem("token");
           navigate("/");
         }

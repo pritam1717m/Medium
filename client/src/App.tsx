@@ -9,6 +9,7 @@ import Draft from "./pages/draft";
 import Edit from "./pages/edit";
 import Stories from "./pages/stories";
 import Profile from "./pages/profile";
+import Logout from "./pages/logout";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/draft" element={<Draft/>} />
             <Route path="/stories" element={<Stories />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/logout" element={<Logout />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
