@@ -12,9 +12,9 @@ export default function StoriesLeft() {
   const writeId = useSetAtom(writeAtom);
 
   return (
-    <div className="w-full px-10 flex flex-col justify-center items-center font-[HostGrotesk]">
+    <div className="w-full px-5 lg:px-10 flex flex-col justify-center items-center font-[HostGrotesk]">
       <div className="w-full pt-14 pb-5 flex flex-row justify-between ">
-        <p className="text-5xl font-bold dark:text-slate-200">Your stories</p>
+        <p className="text-2xl lg:text-5xl font-bold dark:text-slate-200">Your stories</p>
         <div>
           <button
             className="bg-green-700/90 px-4 py-2 rounded-full text-slate-50"
@@ -55,10 +55,10 @@ export default function StoriesLeft() {
             <TabsTrigger value="draft" autoFocus>Drafts</TabsTrigger>
             <TabsTrigger value="published">Published</TabsTrigger>
           </TabsList>
-          <TabsContent value="draft" className="mx-5">
+          <TabsContent value="draft" className="lg:mx-5">
             <DraftBlog />
           </TabsContent>
-          <TabsContent value="published" className="mx-5">
+          <TabsContent value="published" className="lg:mx-5">
             <PublishedBlog />
           </TabsContent>
         </Tabs>

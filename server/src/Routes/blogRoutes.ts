@@ -19,10 +19,10 @@ blogRoutes.use(async (c, next) => {
   const rateLimit = BlogRateLimiter.getInstance(c as Context);
   const ip = c.req.raw.headers.get("CF-Connecting-IP");
   const { success } = await rateLimit.limit(ip ?? "anonymous");
-  if(success) {
+  if (success) {
     await next();
   } else {
-    return c.json({message : "Too many requests"}, 429)
+    return c.json({ message: "Too many requests" }, 429);
   }
 });
 
@@ -159,16 +159,54 @@ blogRoutes.get("/", async (c) => {
   }).$extends(withAccelerate());
 
   try {
-    const post = await prisma.post.findMany({
+    const posts = await prisma.post.findMany({
       where: {
         authorId: c.get("userId"),
       },
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        author: {
+          select: {
+            name: true,
+          },
+        },
+        votes: {
+          select: {
+            userId: true,
+            voteType: true,
+          },
+        },
+      },
     });
 
-    return c.json({ post });
+    if (!posts) {
+      return c.json({ error: "Blog not found" }, 404);
+    }
+
+    const formattedPosts = posts.map((post) => {
+      let upvotes = 0;
+      let downvotes = 0;
+
+      post.votes.forEach((vote) => {
+        if (vote.voteType === "UP") {
+          upvotes++;
+        } else if (vote.voteType === "DOWN") {
+          downvotes++;
+        }
+      });
+
+      const { votes, ...rest } = post;
+
+      return {
+        ...rest,
+        upvotes,
+        downvotes,
+      };
+    });
+
+    return c.json({ posts: formattedPosts });
   } catch (err) {
     c.json({
       error: "Something went wrong",

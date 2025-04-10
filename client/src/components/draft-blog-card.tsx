@@ -26,7 +26,7 @@ function DraftBlogCard({ blog }: { blog: Blog }) {
           }}
         >
           <div className="mt-2 flex flex-col space-y-2">
-            <p className="text-2xl font-extrabold text-wrap">{blog.title}</p>
+            <p className="text-lg md:text-2xl font-extrabold text-wrap">{blog.title}</p>
             <p className="text-slate-500 font-medium">
               {content.length >= 130 ? content.slice(0, 130) + "..." : content}
             </p>

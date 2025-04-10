@@ -7,6 +7,8 @@ type Blog = {
   content: any;
   time: string;
   author?: string;
+  upvotes: number;
+  downvotes: number;
 };
 
 function ProfileBlog({ blog }: { blog: Blog }) {
@@ -16,7 +18,7 @@ function ProfileBlog({ blog }: { blog: Blog }) {
     <div className="py-8 flex flex-col space-y-2 border-b border-slate-200 dark:border-slate-700 font-[HostGrotesk]">
       {blog.author && (
         <div className="flex flex-row items-center space-x-2 dark:text-slate-200">
-          <Avatar label={blog.author} />
+          <Avatar label={blog.author} className="w-7 h-7"/>
           <p>by {blog.author}</p>
         </div>
       )}
@@ -36,7 +38,7 @@ function ProfileBlog({ blog }: { blog: Blog }) {
       </div>
       <div className="mt-2 flex flex-row space-x-2 text-center text-slate-500 font-medium">
         <p className="text-center">✨ {formatTime(blog.time)}</p>
-        <p className="text-center">👋🏼 5.4k</p>
+        <p className="text-center">👋🏼 {blog.downvotes + blog.upvotes}</p>
         <p className="text-center">👀 243</p>
       </div>
     </div>

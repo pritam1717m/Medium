@@ -91,9 +91,9 @@ const RenderContent = ({
   }, []);
 
   return (
-    <div className="w-[350px] lg:w-[700px]">
-      <div className="w- flex flex-col justify-center">
-        <p className="text-[42px] font-[HostGrotesk] font-extrabold dark:text-slate-200 leading-snug text-justify">
+    <div className="w-full max-w-[700px] px-4 sm:px-6 md:px-8 lg:px-0 mx-auto">
+      <div className="w-full flex flex-col justify-center">
+        <p className="text-[38px] md:text-[42px] font-[HostGrotesk] font-extrabold dark:text-slate-200 leading-snug text-wrap">
           {title}
         </p>
         <div className="my-10 flex items-center gap-3">
@@ -167,9 +167,9 @@ const RenderContent = ({
           </div>
         </div>
         <div className="mb-5 flex flex-row justify-between border-t border-b py-4">
-          <div className="flex flex-row justify-center items-center gap-10">
+          <div className="flex flex-row justify-center items-center gap-5 md:gap-7 lg:gap-10">
             <button
-              className="flex gap-2 text-lg items-center"
+              className="flex gap-1 md:gap-2 text-lg items-center"
               onClick={() => {
                 toast.promise(
                   axios.post(
@@ -210,7 +210,7 @@ const RenderContent = ({
               {vote.upvote}
             </button>
             <button
-              className="flex gap-2 text-lg items-center"
+              className="flex gap-1 md:gap-2 text-lg items-center"
               onClick={() => {
                 toast.promise(
                   axios.post(
@@ -254,7 +254,7 @@ const RenderContent = ({
               <MessageCircleMore />
             </button>
           </div>
-          <div className="flex flex-row justify-center items-center gap-10">
+          <div className="flex flex-row justify-center items-center gap-5 md:gap-7 lg:gap-10">
             <BookmarkPlus />
             <Disc />
             <Share />
@@ -262,14 +262,14 @@ const RenderContent = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-col space-y-5 text-justify">
+      <div className="w-full flex flex-col space-y-5 text-justify">
         {content.blocks.map((block) => {
           switch (block.type) {
             case "paragraph":
               return (
                 <p
                   key={block.id}
-                  className="font-[Helvetica] font-medium text-lg text-slate-800 dark:text-gray-200 leading-7"
+                  className="font-[Helvetica] font-medium text-lg text-slate-800 dark:text-gray-200 leading-7 break-words whitespace-pre-wrap"
                 >
                   &nbsp;&nbsp;&nbsp;&nbsp;{block.data.text}
                 </p>
@@ -348,14 +348,14 @@ const RenderContent = ({
 
             case "list":
               return (
-                <div key={block.id} className="mb-4">
+                <div key={block.id} className="w-full mb-4">
                   {block.data.style === "ordered" ? (
                     <ol className="list-decimal pl-10">
                       {block.data.items.map(
                         (item: { content: string }, index: number) => (
                           <li
                             key={index}
-                            className="mb-1 text-lg font-[Helvetica] text-slate-800 dark:text-gray-200"
+                            className="mb-1 text-lg font-[Helvetica] text-slate-800 dark:text-gray-200 break-words whitespace-pre-wrap"
                           >
                             {item.content}
                           </li>
@@ -372,7 +372,7 @@ const RenderContent = ({
                           },
                           index: number
                         ) => (
-                          <li key={index} className="flex items-center gap-2">
+                          <li key={index} className="flex items-center gap-2 mb-1 text-lg font-[Helvetica] text-slate-800 dark:text-gray-200 break-words whitespace-pre-wrap">
                             <input
                               type="checkbox"
                               checked={item.meta?.checked || false}
@@ -393,12 +393,12 @@ const RenderContent = ({
                       )}
                     </ul>
                   ) : (
-                    <ul className="list-disc pl-10">
+                    <ul className="w-full list-disc pl-10 text-wrap">
                       {block.data.items.map(
                         (item: { content: string }, index: number) => (
                           <li
                             key={index}
-                            className="mb-1 text-lg font-[Helvetica] text-slate-800 dark:text-gray-200"
+                            className="mb-1 text-lg font-[Helvetica] text-slate-800 dark:text-gray-200 break-words whitespace-pre-wrap"
                           >
                             {item.content}
                           </li>
@@ -440,13 +440,12 @@ const RenderContent = ({
               return (
                 <div
                   key={block.id}
-                  className="w-full flex flex-col items-center"
+                  className="w-full flex flex-col items-center aspect-video"
                 >
                   <iframe
                     src={block.data.embed}
                     title="Embedded Video"
-                    width={700}
-                    height={400}
+                    className="w-full h-full"
                     allowFullScreen
                   ></iframe>
                   {block.data.caption && (

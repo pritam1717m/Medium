@@ -55,7 +55,7 @@ export default function PublishedBlog() {
     })();
   }, [refresh]);
   return (
-    <div className="mt-5 min-w-[350px] lg:min-w-[500px]">
+    <div className="mt-5 min-w-[300px] lg:min-w-[500px]">
       {isLoading
         ? Array.from({ length: 4 }).map((_, index) => {
             return (
@@ -83,7 +83,7 @@ export default function PublishedBlog() {
           })
         : blogs.length ? blogs.map((blog) => {
             return (
-              <div className="flex space-x-5 justify-between items-center border-b border-slate-200 dark:border-slate-700">
+              <div className="flex flex-col sm:flex-row space-x-1 lg:space-x-5 justify-between items-center border-b border-slate-200 dark:border-slate-700">
                 <DraftBlogCard key={blog.id} blog={blog} />
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
