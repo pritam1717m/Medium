@@ -1,17 +1,40 @@
 import AppBar from "@/components/appbar";
 import BlogsLeft from "@/components/blogs-left";
 import BlogsRight from "@/components/blogs-right";
-import { useEffect } from "react";
+import axios, { AxiosError } from "axios";
+import { ErrorInfo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 function Blogs() {
   const navigate = useNavigate();
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      toast.info("You're not logged in...");
-      navigate("/");
-    }
+    (async () => {
+      try {
+        const res = await axios.post(
+          `${import.meta.env.VITE_domain_uri}/user/me`,
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+
+        if (res.data.status === 401) {
+          toast.error("Session expired, Login again...");
+          localStorage.removeItem("token");
+          navigate("/");
+        }
+      } catch (error: any) {
+        toast.error("Something went wrong!");
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/");
+        }
+      }
+    })();
   }, []);
   return (
     <div
@@ -23,8 +46,8 @@ function Blogs() {
     >
       <AppBar />
       <div className="xl:px-20 w-full flex flex-row justify-evenly">
-        <div className="min-w-full md:w-2/3 lg:min-w-[728px] lg:max-w-[728px]">  
-            <BlogsLeft />
+        <div className="min-w-full md:w-2/3 lg:min-w-[728px] lg:max-w-[728px]">
+          <BlogsLeft />
         </div>
         <div className=" max-w-0 md: w-1/3 lg:min-w-96 lg:max-w-52 hidden md:block">
           <BlogsRight />

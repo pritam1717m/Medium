@@ -1,8 +1,41 @@
 import AppBar from "@/components/appbar";
 import BlogsRight from "@/components/blogs-right";
 import StoriesLeft from "@/components/stories-left";
+import axios from "axios";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function Stories() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await axios.post(
+          `${import.meta.env.VITE_domain_uri}/user/me`,
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+
+        if (res.data.status === 401) {
+          toast.error("Session expired, Login again...");
+          localStorage.removeItem("token");
+          navigate("/");
+        }
+      } catch (error: any) {
+        toast.error("Something went wrong!");
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/");
+        }
+      }
+    })();
+  }, []);
   return (
     <div
       className="h-screen w-screen flex flex-col sm:overflow-y-scroll [&::-webkit-scrollbar]:w-2

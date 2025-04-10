@@ -3,7 +3,7 @@ import RenderContent from "@/components/render-content";
 import { Skeleton } from "@/components/ui/skeleton";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 interface Block {
@@ -39,6 +39,35 @@ function Blog() {
     downvotes: 0,
   });
   const { id } = useParams();
+  const navigate = useNavigate();
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await axios.post(
+          `${import.meta.env.VITE_domain_uri}/user/me`,
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+
+        if (res.data.status === 401) {
+          toast.error("Session expired, Login again...");
+          localStorage.removeItem("token");
+          navigate("/");
+        }
+      } catch (error: any) {
+        toast.error("Something went wrong!");
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/");
+        }
+      }
+    })();
+  }, []);
   useEffect(() => {
     (async () => {
       try {
