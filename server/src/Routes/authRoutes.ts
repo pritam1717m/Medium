@@ -13,16 +13,16 @@ const authRoutes = new Hono<{
   };
 }>();
 
-// authRoutes.use(async (c, next) => {
-//   const rateLimit = AuthRateLimiter.getInstance(c as Context);
-//   const ip = c.req.raw.headers.get("CF-Connecting-IP");
-//   const { success } = await rateLimit.limit(ip ?? "anonymous");
-//   if(success) {
-//     await next();
-//   } else {
-//     return c.json({message : "Too many requests"}, 429)
-//   }
-// });
+authRoutes.use(async (c, next) => {
+  const rateLimit = AuthRateLimiter.getInstance(c as Context);
+  const ip = c.req.raw.headers.get("CF-Connecting-IP");
+  const { success } = await rateLimit.limit(ip ?? "anonymous");
+  if(success) {
+    await next();
+  } else {
+    return c.json({message : "Too many requests"}, 429)
+  }
+});
 
 authRoutes.post("/signup", async (c) => {
   const prisma = new PrismaClient({

@@ -30,7 +30,7 @@ export class BlogRateLimiter {
 
       const rateLimit = new Ratelimit({
         redis: redisClient,
-        limiter: Ratelimit.slidingWindow(15, "60 s"),
+        limiter: Ratelimit.slidingWindow(20, "60 s"),
         ephemeralCache: cache,
       });
 
@@ -66,7 +66,7 @@ export class UserRateLimiter {
 
       const rateLimit = new Ratelimit({
         redis: redisClient,
-        limiter: Ratelimit.slidingWindow(8, "60 s"),
+        limiter: Ratelimit.slidingWindow(20, "60 s"),
         ephemeralCache: cache,
       });
 
@@ -102,7 +102,7 @@ export class AuthRateLimiter {
 
       const rateLimit = new Ratelimit({
         redis: redisClient,
-        limiter: Ratelimit.slidingWindow(3, "43200 s"),
+        limiter: Ratelimit.slidingWindow(8, "43200 s"),
         ephemeralCache: cache,
       });
 

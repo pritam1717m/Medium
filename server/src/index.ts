@@ -8,7 +8,7 @@ const app = new Hono();
 app.use(
   "/api/*",
   cors({
-    origin: ["https://medium-by-pritam.vercel.app", "http://localhost:5173"],
+    origin: ["https://medium-by-pritam.vercel.app"],
     allowMethods: ["POST", "GET", "DELETE", "PUT"],
     exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
     maxAge: 600,
