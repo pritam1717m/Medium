@@ -1,8 +1,8 @@
 import AppBar from "@/components/appbar";
 import BlogsLeft from "@/components/blogs-left";
 import BlogsRight from "@/components/blogs-right";
-import axios, { AxiosError } from "axios";
-import { ErrorInfo, useEffect } from "react";
+import axios from "axios";
+import {  useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
