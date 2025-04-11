@@ -7,5 +7,6 @@ export const blogAtom = atomWithStorage<{
     time: string;
     author?: string;
     upvotes: number;
-    downvotes: number
+    downvotes: number;
+    views: number;
   }[]>('blog',[]);

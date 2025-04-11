@@ -35,7 +35,8 @@ export default function ProfileLeft() {
             time: item.updatedAt,
             author: item.author.name,
             upvotes: item.upvotes, 
-            downvotes: item.downvotes, 
+            downvotes: item.downvotes,
+            views: item.views, 
           }));
           setBlogs(formattedBlogs);
           setIsLoading(false);

@@ -178,6 +178,11 @@ blogRoutes.get("/", async (c) => {
             voteType: true,
           },
         },
+        views: {
+          select: {
+            userId: true,
+          }
+        }
       },
     });
 
@@ -188,6 +193,7 @@ blogRoutes.get("/", async (c) => {
     const formattedPosts = posts.map((post) => {
       let upvotes = 0;
       let downvotes = 0;
+      let views = 0;
 
       post.votes.forEach((vote) => {
         if (vote.voteType === "UP") {
@@ -197,12 +203,15 @@ blogRoutes.get("/", async (c) => {
         }
       });
 
+      views = post.views.length;
+
       const { votes, ...rest } = post;
 
       return {
         ...rest,
         upvotes,
         downvotes,
+        views,
       };
     });
 
@@ -239,6 +248,11 @@ blogRoutes.get("/all", async (c) => {
             voteType: true,
           },
         },
+        views: {
+          select: {
+            userId: true,
+          }
+        }
       },
     });
     if (!posts) {
@@ -248,6 +262,7 @@ blogRoutes.get("/all", async (c) => {
     const formattedPosts = posts.map((post) => {
       let upvotes = 0;
       let downvotes = 0;
+      let views = 0;
 
       post.votes.forEach((vote) => {
         if (vote.voteType === "UP") {
@@ -257,12 +272,15 @@ blogRoutes.get("/all", async (c) => {
         }
       });
 
+      views = post.views.length;
+
       const { votes, ...rest } = post;
 
       return {
         ...rest,
         upvotes,
         downvotes,
+        views,
       };
     });
 
@@ -346,6 +364,11 @@ blogRoutes.get("/:id", async (c) => {
             voteType: true,
           },
         },
+        views: {
+          select: {
+            userId: true,
+          }
+        }
       },
     });
 
@@ -355,6 +378,7 @@ blogRoutes.get("/:id", async (c) => {
 
     let upvotes = 0;
     let downvotes = 0;
+    let views = 0;
 
     post?.votes.forEach((vote) => {
       if (vote.voteType === "UP") {
@@ -364,6 +388,8 @@ blogRoutes.get("/:id", async (c) => {
       }
     });
 
+    views = post.views.length
+
     const { votes, ...rest } = post;
 
     return c.json({
@@ -371,6 +397,7 @@ blogRoutes.get("/:id", async (c) => {
         ...rest,
         upvotes,
         downvotes,
+        views,
       },
     });
   } catch (err) {

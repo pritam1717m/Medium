@@ -13,7 +13,7 @@ function Draft() {
     }
     (async () => {
       try {
-        const res = await axios.get(
+        await axios.get(
           `${import.meta.env.VITE_domain_uri}/user/me`,
           {
             headers: {
@@ -22,14 +22,10 @@ function Draft() {
             },
           }
         );
-
-        if (res.data.status === 401) {
-          toast.error("Session expired, Login again...");
-          localStorage.removeItem("token");
-          navigate("/");
-        }
       } catch (error: any) {
-        toast.error("Something went wrong!");
+        if(error.response?.status === 429){
+          toast.error("Too many requests, please try again after 1 minutes")
+        }
         if (error.response?.status === 401) {
           toast.error("Session expired, Login again...");
           localStorage.removeItem("token");
