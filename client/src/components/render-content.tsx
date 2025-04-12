@@ -25,6 +25,33 @@ type Content = {
   blocks: Block[];
 };
 
+const renderContent = (content: string) => {
+  const normalizedContent = content.replace(/&nbsp;/g, " ");
+
+  const parts = normalizedContent.split(/(<a.*?<\/a>)/g);
+
+  return parts.map((part, i) => {
+    if (part.startsWith("<a")) {
+      const match = part.match(/<a\s+href="(.*?)".*?>(.*?)<\/a>/);
+      if (match) {
+        const [, href, text] = match;
+        return (
+          <a
+            key={i}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-800 dark:text-slate-300 underline hover:text-blue-800"
+          >
+            {text}
+          </a>
+        );
+      }
+    }
+    return <span key={i}>{part}</span>;
+  });
+};
+
 const RenderContent = ({
   postId,
   content,
@@ -52,7 +79,7 @@ const RenderContent = ({
     upvote: upvotes,
     downvote: downvotes,
   });
-  const [voted, setVoted] = useState<string>("")
+  const [voted, setVoted] = useState<string>("");
 
   useEffect(() => {
     setLoading(true);
@@ -77,8 +104,8 @@ const RenderContent = ({
           },
         }
       );
-      if(voteType.data.vote){
-        setVoted(voteType.data.vote)
+      if (voteType.data.vote) {
+        setVoted(voteType.data.vote);
       }
       if (res.data.followed) {
         setFollowed(true);
@@ -187,12 +214,12 @@ const RenderContent = ({
                   ),
                   {
                     success: () => {
-                      if(voted == "DOWN"){
-                        setVote(prev => ({
+                      if (voted == "DOWN") {
+                        setVote((prev) => ({
                           upvote: prev.upvote + 1,
                           downvote: prev.downvote - 1,
                         }));
-                        setVoted("UP")
+                        setVoted("UP");
                       }
                       return "UpVoted";
                     },
@@ -206,7 +233,11 @@ const RenderContent = ({
                 );
               }}
             >
-              {voted == "UP" ? <CircleArrowUp className="text-green-500" /> : <CircleArrowUp />}
+              {voted == "UP" ? (
+                <CircleArrowUp className="text-green-500" />
+              ) : (
+                <CircleArrowUp />
+              )}
               {vote.upvote}
             </button>
             <button
@@ -228,12 +259,12 @@ const RenderContent = ({
                   ),
                   {
                     success: () => {
-                      if(voted == "UP"){
-                        setVote(prev => ({
+                      if (voted == "UP") {
+                        setVote((prev) => ({
                           upvote: prev.upvote - 1,
                           downvote: prev.downvote + 1,
                         }));
-                        setVoted("DOWN")
+                        setVoted("DOWN");
                       }
                       return "DownVoted";
                     },
@@ -247,7 +278,11 @@ const RenderContent = ({
                 );
               }}
             >
-              {voted == "DOWN" ? <CircleArrowDown className="text-red-500" /> : <CircleArrowDown />}
+              {voted == "DOWN" ? (
+                <CircleArrowDown className="text-red-500" />
+              ) : (
+                <CircleArrowDown />
+              )}
               {vote.downvote}
             </button>
             <button>
@@ -271,7 +306,7 @@ const RenderContent = ({
                   key={block.id}
                   className="font-[Helvetica] font-medium text-lg text-slate-800 dark:text-gray-200 leading-7 break-words whitespace-pre-wrap"
                 >
-                  &nbsp;&nbsp;&nbsp;&nbsp;{block.data.text}
+                  &nbsp;&nbsp;&nbsp;&nbsp;{renderContent(block.data.text)}
                 </p>
               );
 
@@ -283,34 +318,34 @@ const RenderContent = ({
                   className="text-slate-800 dark:text-slate-200"
                 >
                   {headingLevel === 1 && (
-                    <h1 className="text-2xl font-bold leading-tight">
+                    <div className="text-2xl font-bold leading-tight">
                       {block.data.text}
-                    </h1>
+                    </div>
                   )}
                   {headingLevel === 2 && (
-                    <h2 className="text-xl font-semibold leading-snug">
+                    <div className="text-xl font-semibold leading-snug">
                       {block.data.text}
-                    </h2>
+                    </div>
                   )}
                   {headingLevel === 3 && (
-                    <h3 className="text-lg font-medium leading-normal">
+                    <div className="text-lg font-medium leading-normal">
                       {block.data.text}
-                    </h3>
+                    </div>
                   )}
                   {headingLevel === 4 && (
-                    <h4 className="text-md font-medium leading-relaxed">
+                    <div className="text-md font-medium leading-relaxed">
                       {block.data.text}
-                    </h4>
+                    </div>
                   )}
                   {headingLevel === 5 && (
-                    <h5 className="text-sm font-semibold leading-loose">
+                    <div className="text-sm font-semibold leading-loose">
                       {block.data.text}
-                    </h5>
+                    </div>
                   )}
                   {headingLevel === 6 && (
-                    <h6 className="text-xs font-semibold tracking-wide">
+                    <div className="text-xs font-semibold tracking-wide">
                       {block.data.text}
-                    </h6>
+                    </div>
                   )}
                 </div>
               );
@@ -357,7 +392,7 @@ const RenderContent = ({
                             key={index}
                             className="mb-1 text-lg font-[Helvetica] text-slate-800 dark:text-gray-200 break-words whitespace-pre-wrap"
                           >
-                            {item.content}
+                            {renderContent(item.content)}
                           </li>
                         )
                       )}
@@ -372,22 +407,25 @@ const RenderContent = ({
                           },
                           index: number
                         ) => (
-                          <li key={index} className="flex items-center gap-2 mb-1 text-lg font-[Helvetica] text-slate-800 dark:text-gray-200 break-words whitespace-pre-wrap">
+                          <li
+                            key={index}
+                            className="flex items-center gap-2 mb-1 text-lg font-[Helvetica] text-slate-800 dark:text-gray-200 break-words whitespace-pre-wrap"
+                          >
                             <input
                               type="checkbox"
                               checked={item.meta?.checked || false}
                               readOnly
                               className="w-4 h-4"
                             />
-                            <span
+                            <div
                               className={
                                 item.meta?.checked
                                   ? "line-through dark:text-gray-200"
                                   : ""
                               }
                             >
-                              {item.content}
-                            </span>
+                              {renderContent(item.content)}
+                            </div>
                           </li>
                         )
                       )}
@@ -398,9 +436,9 @@ const RenderContent = ({
                         (item: { content: string }, index: number) => (
                           <li
                             key={index}
-                            className="mb-1 text-lg font-[Helvetica] text-slate-800 dark:text-gray-200 break-words whitespace-pre-wrap"
+                            className="mb-1 text-lg font-[Helvetica] text-slate-800 dark:text-gray-200 break-words whitespace-pre-wrap "
                           >
-                            {item.content}
+                            <div>{renderContent(item.content)}</div>
                           </li>
                         )
                       )}
