@@ -4,6 +4,7 @@ import { Auth } from "@/components/auth";
 import Button from "@/components/button";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 function Home() {
   const navigate = useNavigate();
@@ -11,6 +12,8 @@ function Home() {
   useEffect(() => {
     if (localStorage.getItem("token")) {
         navigate('/blogs')
+    } else {
+      toast.info("Please keep patient for the first request ☺️")
     }
   }, []);
   return (
